@@ -1,0 +1,27 @@
+{
+  "common": {
+    "languageLabel": "Språk",
+    "languageSwitchLabel": "Byt språk",
+    "localeSv": "SV",
+    "localeEn": "EN",
+    "settingsButtonLabel": "Öppna inställningar",
+    "settingsTitle": "Inställningar",
+    "themeLabel": "Tema",
+    "themeLight": "Ljust",
+    "themeDark": "Mörkt"
+  },
+  "electricity": {
+    "headerTitle": "Hushållsel",
+    "cards": {
+      "totalCost": "Total kostnad",
+      "totalConsumption": "Total förbrukning",
+      "averagePrice": "Snittpris"
+    },
+    "charts": {
+      "monthlyCostsTitle": "Månadskostnad",
+      "monthlyCostsDescription": "Utveckling av elkostnad per månad (SEK)",
+      "monthlyConsumptionTitle": "Månadsförbrukning",
+      "monthlyConsumptionDescription": "Utveckling av elförbrukning per månad (kWh)"
+    }
+  }
+}

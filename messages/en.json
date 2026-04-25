@@ -1,0 +1,27 @@
+{
+  "common": {
+    "languageLabel": "Language",
+    "languageSwitchLabel": "Switch language",
+    "localeSv": "SV",
+    "localeEn": "EN",
+    "settingsButtonLabel": "Open settings",
+    "settingsTitle": "Settings",
+    "themeLabel": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark"
+  },
+  "electricity": {
+    "headerTitle": "Household Electricity",
+    "cards": {
+      "totalCost": "Total cost",
+      "totalConsumption": "Total consumption",
+      "averagePrice": "Average price"
+    },
+    "charts": {
+      "monthlyCostsTitle": "Monthly costs",
+      "monthlyCostsDescription": "Monthly electricity costs over time (SEK)",
+      "monthlyConsumptionTitle": "Monthly consumption",
+      "monthlyConsumptionDescription": "Monthly electricity consumption over time (kWh)"
+    }
+  }
+}
