@@ -1,13 +1,26 @@
 import { getTranslations } from "next-intl/server";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { ElectricityCharts } from "@/components/electricity/electricity-charts";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SettingsPanel } from "@/components/settings-panel";
 import { StatsCard } from "@/components/electricity/stats-card";
 import { getElectricityDashboardData } from "@/lib/electricity-data";
 
-export default async function ElectricityPage() {
+type ElectricityPageProps = {
+  searchParams: Promise<{ year?: string }>;
+};
+
+export default async function ElectricityPage({ searchParams }: ElectricityPageProps) {
   const t = await getTranslations("electricity");
-  const data = await getElectricityDashboardData();
+  const params = await searchParams;
+  const requestedYear = Number(params.year);
+  const data = await getElectricityDashboardData(
+    Number.isFinite(requestedYear) ? requestedYear : undefined
+  );
+  const selectedYearIndex = data.availableYears.findIndex((year) => year === data.selectedYear);
+  const previousYear = data.availableYears[selectedYearIndex - 1];
+  const nextYear = data.availableYears[selectedYearIndex + 1];
 
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
@@ -19,31 +32,97 @@ export default async function ElectricityPage() {
         </div>
       </div>
 
+      <section className="mb-8 flex items-center gap-3">
+        {previousYear ? (
+          <Link
+            href={{ pathname: "/electricity", query: { year: String(previousYear) } }}
+            className="rounded border px-2 py-1 text-sm hover:bg-muted"
+            aria-label={t("yearSwitch.back")}
+          >
+            <ChevronLeft className="size-4" aria-hidden="true" />
+            <span className="sr-only">{t("yearSwitch.back")}</span>
+          </Link>
+        ) : (
+          <span
+            className="rounded border px-2 py-1 text-sm text-muted-foreground opacity-50"
+            aria-hidden="true"
+          >
+            <ChevronLeft className="size-4" />
+          </span>
+        )}
+        <span className="min-w-16 text-center text-lg font-semibold">{data.selectedYear}</span>
+        {nextYear ? (
+          <Link
+            href={{ pathname: "/electricity", query: { year: String(nextYear) } }}
+            className="rounded border px-2 py-1 text-sm hover:bg-muted"
+            aria-label={t("yearSwitch.forward")}
+          >
+            <ChevronRight className="size-4" aria-hidden="true" />
+            <span className="sr-only">{t("yearSwitch.forward")}</span>
+          </Link>
+        ) : (
+          <span
+            className="rounded border px-2 py-1 text-sm text-muted-foreground opacity-50"
+            aria-hidden="true"
+          >
+            <ChevronRight className="size-4" />
+          </span>
+        )}
+      </section>
+
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatsCard
           title={t("cards.totalCost")}
           value={`${data.summary.totalCostSek.toLocaleString()} SEK`}
-          trendPercent={data.summary.costTrendPercent}
         />
         <StatsCard
           title={t("cards.totalConsumption")}
-          value={`${data.summary.totalConsumptionKwh.toLocaleString()} kWh`}
-          trendPercent={data.summary.consumptionTrendPercent}
+          value={`${data.summary.totalSettledKwh.toLocaleString()} kWh`}
         />
         <StatsCard
           title={t("cards.averagePrice")}
-          value={`${data.summary.averagePriceSekPerKwh.toFixed(2)} SEK/kWh`}
-          trendPercent={data.summary.averagePriceTrendPercent}
+          value={`${data.summary.averageCostSekPerMonth.toLocaleString("sv-SE", { maximumFractionDigits: 0 })} SEK/mån`}
         />
       </section>
+
+      {data.yearlySummary ? (
+        <section className="mt-8">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <StatsCard
+              title={t("yearlyCards.totalAnnualCost")}
+              value={`${data.yearlySummary.totalAnnualCostSek.toLocaleString()} SEK`}
+            />
+            <StatsCard
+              title={t("yearlyCards.annualElectricityFees")}
+              value={`${data.yearlySummary.annualElectricitySupplierSek.toLocaleString()} SEK`}
+            />
+            <StatsCard
+              title={t("yearlyCards.annualGridFees")}
+              value={`${data.yearlySummary.annualGridFeesSek.toLocaleString()} SEK`}
+            />
+            <StatsCard
+              title={t("yearlyCards.totalAnnualConsumption")}
+              value={`${data.yearlySummary.totalAnnualSettledKwh.toLocaleString()} kWh`}
+            />
+            <StatsCard
+              title={t("yearlyCards.averageTotalPrice")}
+              value={`${data.yearlySummary.averageEnergyFeeInclVatOrePerKwh.toLocaleString("sv-SE", { maximumFractionDigits: 1 })} öre/kWh`}
+            />
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-8">
         <ElectricityCharts
           data={data.monthly}
-          monthlyCostsTitle={t("charts.monthlyCostsTitle")}
-          monthlyCostsDescription={t("charts.monthlyCostsDescription")}
-          monthlyConsumptionTitle={t("charts.monthlyConsumptionTitle")}
-          monthlyConsumptionDescription={t("charts.monthlyConsumptionDescription")}
+          card1Title={t("charts.card1Title")}
+          card2Title={t("charts.card2Title")}
+          card3Title={t("charts.card3Title")}
+          card4Title={t("charts.card4Title")}
+          totalLabel={t("charts.totalLabel")}
+          averageLabel={t("charts.averageLabel")}
+          aggregatedLabel={t("charts.aggregatedLabel")}
+          commentsLabel={t("charts.commentsLabel")}
         />
       </section>
     </main>

@@ -12,16 +12,37 @@
   },
   "electricity": {
     "headerTitle": "Hushållsel",
+    "yearSwitch": {
+      "label": "Valt år",
+      "back": "<-",
+      "forward": "->"
+    },
     "cards": {
       "totalCost": "Total kostnad",
       "totalConsumption": "Total förbrukning",
-      "averagePrice": "Snittpris"
+      "averagePrice": "Snitt per månad"
+    },
+    "yearlyCards": {
+      "title": "Årsstatistik (senaste år i datat)",
+      "totalAnnualCost": "Årskostnad totalt",
+      "annualElectricityFees": "Årskostnad elhandel",
+      "annualGridFees": "Årskostnad nätavgifter",
+      "totalAnnualConsumption": "Årsförbrukning total",
+      "averageTotalPrice": "Medelvärde total (öre/kWh)"
     },
     "charts": {
-      "monthlyCostsTitle": "Månadskostnad",
-      "monthlyCostsDescription": "Utveckling av elkostnad per månad (SEK)",
-      "monthlyConsumptionTitle": "Månadsförbrukning",
-      "monthlyConsumptionDescription": "Utveckling av elförbrukning per månad (kWh)"
+      "card1Title": "Energiavgift + nätavgifter (aggregerat)",
+      "card1Description": "Två serier staplade med total ovanpå",
+      "card2Title": "Prisdelar öre/kWh (aggregerat)",
+      "card2Description": "Tre serier staplade med total ovanpå",
+      "card3Title": "Total kostnad SEK",
+      "card3Description": "Månadsvärde och ackumulerad kostnad",
+      "card4Title": "Summa avstämt (kWh)",
+      "card4Description": "Månadsvärde och ackumulerad förbrukning",
+      "totalLabel": "Totalt",
+      "averageLabel": "Medel",
+      "aggregatedLabel": "Aggregerat totalt",
+      "commentsLabel": "Kommentar"
     }
   }
 }

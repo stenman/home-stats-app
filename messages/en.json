@@ -12,16 +12,37 @@
   },
   "electricity": {
     "headerTitle": "Household Electricity",
+    "yearSwitch": {
+      "label": "Selected year",
+      "back": "<-",
+      "forward": "->"
+    },
     "cards": {
       "totalCost": "Total cost",
       "totalConsumption": "Total consumption",
-      "averagePrice": "Average price"
+      "averagePrice": "Average per month"
+    },
+    "yearlyCards": {
+      "title": "Yearly statistics (latest year in data)",
+      "totalAnnualCost": "Annual total cost",
+      "annualElectricityFees": "Annual energy supplier cost",
+      "annualGridFees": "Annual grid fees",
+      "totalAnnualConsumption": "Total annual consumption",
+      "averageTotalPrice": "Average total price (ore/kWh)"
     },
     "charts": {
-      "monthlyCostsTitle": "Monthly costs",
-      "monthlyCostsDescription": "Monthly electricity costs over time (SEK)",
-      "monthlyConsumptionTitle": "Monthly consumption",
-      "monthlyConsumptionDescription": "Monthly electricity consumption over time (kWh)"
+      "card1Title": "Energy fee + grid fees (aggregated)",
+      "card1Description": "Two stacked series with total on top",
+      "card2Title": "Price components ore/kWh (aggregated)",
+      "card2Description": "Three stacked series with total on top",
+      "card3Title": "Total cost SEK",
+      "card3Description": "Monthly value and accumulated cost",
+      "card4Title": "Settled total (kWh)",
+      "card4Description": "Monthly value and accumulated consumption",
+      "totalLabel": "Total",
+      "averageLabel": "Average",
+      "aggregatedLabel": "Aggregated total",
+      "commentsLabel": "Comment"
     }
   }
 }
