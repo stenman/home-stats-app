@@ -28,6 +28,18 @@ type ElectricityChartsProps = {
   averageLabel: string;
   aggregatedLabel: string;
   commentsLabel: string;
+  legendSupplier: string;
+  legendGridFees: string;
+  legendSupplierShort: string;
+  legendGridFeesShort: string;
+  legendEnergyFee: string;
+  legendEnergyTax: string;
+  legendTransfer: string;
+  legendEnergyFeeShort: string;
+  legendEnergyTaxShort: string;
+  legendTransferShort: string;
+  legendTotalCost: string;
+  legendSettledKwh: string;
 };
 
 export function ElectricityCharts({
@@ -40,6 +52,18 @@ export function ElectricityCharts({
   averageLabel,
   aggregatedLabel,
   commentsLabel,
+  legendSupplier,
+  legendGridFees,
+  legendSupplierShort,
+  legendGridFeesShort,
+  legendEnergyFee,
+  legendEnergyTax,
+  legendTransfer,
+  legendEnergyFeeShort,
+  legendEnergyTaxShort,
+  legendTransferShort,
+  legendTotalCost,
+  legendSettledKwh,
 }: ElectricityChartsProps) {
   const chartData = data.map((item) => ({
     ...item,
@@ -107,7 +131,7 @@ export function ElectricityCharts({
                 <Legend />
                 <Area
                   dataKey="card1A"
-                  name="El-leverantor (inkl. fast avgift) [Summa Elhandel]"
+                  name={legendSupplier}
                   stackId="card1"
                   type="monotone"
                   stroke="#2563eb"
@@ -116,7 +140,7 @@ export function ElectricityCharts({
                 />
                 <Area
                   dataKey="card1B"
-                  name="Natavgifter SEK [Summa Elnat]"
+                  name={legendGridFees}
                   stackId="card1"
                   type="monotone"
                   stroke="#14b8a6"
@@ -135,12 +159,12 @@ export function ElectricityCharts({
           </div>
           <div className="grid gap-1 text-sm">
             <p>
-              {totalLabel}: El-leverantor {formatValue(card1Stats.totals[0])}, Natavgifter{" "}
+              {totalLabel}: {legendSupplierShort} {formatValue(card1Stats.totals[0])}, {legendGridFeesShort}{" "}
               {formatValue(card1Stats.totals[1])}, {aggregatedLabel}{" "}
               {formatValue(card1Stats.grandTotal)}
             </p>
             <p className="text-muted-foreground">
-              {averageLabel}: El-leverantor {formatValue(card1Stats.averages[0])}, Natavgifter{" "}
+              {averageLabel}: {legendSupplierShort} {formatValue(card1Stats.averages[0])}, {legendGridFeesShort}{" "}
               {formatValue(card1Stats.averages[1])}, {aggregatedLabel}{" "}
               {formatValue(card1Stats.aggregatedAverage)}
             </p>
@@ -166,7 +190,7 @@ export function ElectricityCharts({
                 <Legend />
                 <Area
                   dataKey="card2A"
-                  name="Energiavgift ore/kWh (inkl. moms) [Forbrukning]"
+                  name={legendEnergyFee}
                   stackId="card2"
                   type="monotone"
                   stroke="#2563eb"
@@ -175,7 +199,7 @@ export function ElectricityCharts({
                 />
                 <Area
                   dataKey="card2B"
-                  name="Energiskatt ore/kWh (inkl. moms)"
+                  name={legendEnergyTax}
                   stackId="card2"
                   type="monotone"
                   stroke="#f59e0b"
@@ -184,7 +208,7 @@ export function ElectricityCharts({
                 />
                 <Area
                   dataKey="card2C"
-                  name="Eloverforing ore/kWh (inkl. moms)"
+                  name={legendTransfer}
                   stackId="card2"
                   type="monotone"
                   stroke="#14b8a6"
@@ -203,13 +227,13 @@ export function ElectricityCharts({
           </div>
           <div className="grid gap-1 text-sm">
             <p>
-              {totalLabel}: Energiavgift {formatValue(card2Stats.totals[0])}, Energiskatt{" "}
-              {formatValue(card2Stats.totals[1])}, Eloverforing {formatValue(card2Stats.totals[2])},{" "}
+              {totalLabel}: {legendEnergyFeeShort} {formatValue(card2Stats.totals[0])}, {legendEnergyTaxShort}{" "}
+              {formatValue(card2Stats.totals[1])}, {legendTransferShort} {formatValue(card2Stats.totals[2])},{" "}
               {aggregatedLabel} {formatValue(card2Stats.grandTotal)}
             </p>
             <p className="text-muted-foreground">
-              {averageLabel}: Energiavgift {formatValue(card2Stats.averages[0])}, Energiskatt{" "}
-              {formatValue(card2Stats.averages[1])}, Eloverforing{" "}
+              {averageLabel}: {legendEnergyFeeShort} {formatValue(card2Stats.averages[0])}, {legendEnergyTaxShort}{" "}
+              {formatValue(card2Stats.averages[1])}, {legendTransferShort}{" "}
               {formatValue(card2Stats.averages[2])}, {aggregatedLabel}{" "}
               {formatValue(card2Stats.aggregatedAverage)}
             </p>
@@ -235,7 +259,7 @@ export function ElectricityCharts({
                 <Legend />
                 <Area
                   dataKey="card3"
-                  name="Total kostnad SEK"
+                  name={legendTotalCost}
                   type="monotone"
                   stroke="#2563eb"
                   fill="#2563eb"
@@ -273,7 +297,7 @@ export function ElectricityCharts({
                 <Legend />
                 <Area
                   dataKey="card4"
-                  name="Summa avstamt (kWh)"
+                  name={legendSettledKwh}
                   type="monotone"
                   stroke="#059669"
                   fill="#34d399"

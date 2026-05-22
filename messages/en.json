@@ -42,7 +42,19 @@
       "totalLabel": "Total",
       "averageLabel": "Average",
       "aggregatedLabel": "Aggregated total",
-      "commentsLabel": "Comment"
+      "commentsLabel": "Comment",
+      "legendSupplier": "Energy supplier (incl. fixed fee) [Total Energy]",
+      "legendGridFees": "Grid fees SEK [Total Grid]",
+      "legendSupplierShort": "Energy supplier",
+      "legendGridFeesShort": "Grid fees",
+      "legendEnergyFee": "Energy fee ore/kWh (incl. VAT) [Consumption]",
+      "legendEnergyTax": "Energy tax ore/kWh (incl. VAT)",
+      "legendTransfer": "Transfer ore/kWh (incl. VAT)",
+      "legendEnergyFeeShort": "Energy fee",
+      "legendEnergyTaxShort": "Energy tax",
+      "legendTransferShort": "Transfer",
+      "legendTotalCost": "Total cost SEK",
+      "legendSettledKwh": "Total settled (kWh)"
     }
   }
 }

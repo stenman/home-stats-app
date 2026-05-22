@@ -123,6 +123,18 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
           averageLabel={t("charts.averageLabel")}
           aggregatedLabel={t("charts.aggregatedLabel")}
           commentsLabel={t("charts.commentsLabel")}
+          legendSupplier={t("charts.legendSupplier")}
+          legendGridFees={t("charts.legendGridFees")}
+          legendSupplierShort={t("charts.legendSupplierShort")}
+          legendGridFeesShort={t("charts.legendGridFeesShort")}
+          legendEnergyFee={t("charts.legendEnergyFee")}
+          legendEnergyTax={t("charts.legendEnergyTax")}
+          legendTransfer={t("charts.legendTransfer")}
+          legendEnergyFeeShort={t("charts.legendEnergyFeeShort")}
+          legendEnergyTaxShort={t("charts.legendEnergyTaxShort")}
+          legendTransferShort={t("charts.legendTransferShort")}
+          legendTotalCost={t("charts.legendTotalCost")}
+          legendSettledKwh={t("charts.legendSettledKwh")}
         />
       </section>
     </main>

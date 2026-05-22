@@ -42,7 +42,19 @@
       "totalLabel": "Totalt",
       "averageLabel": "Medel",
       "aggregatedLabel": "Aggregerat totalt",
-      "commentsLabel": "Kommentar"
+      "commentsLabel": "Kommentar",
+      "legendSupplier": "El-leverantör (inkl. fast avgift) [Summa Elhandel]",
+      "legendGridFees": "Nätavgifter SEK [Summa Elnät]",
+      "legendSupplierShort": "El-leverantör",
+      "legendGridFeesShort": "Nätavgifter",
+      "legendEnergyFee": "Energiavgift öre/kWh (inkl. moms) [Förbrukning]",
+      "legendEnergyTax": "Energiskatt öre/kWh (inkl. moms)",
+      "legendTransfer": "Elöverföring öre/kWh (inkl. moms)",
+      "legendEnergyFeeShort": "Energiavgift",
+      "legendEnergyTaxShort": "Energiskatt",
+      "legendTransferShort": "Elöverföring",
+      "legendTotalCost": "Total kostnad SEK",
+      "legendSettledKwh": "Summa avstämt (kWh)"
     }
   }
 }
