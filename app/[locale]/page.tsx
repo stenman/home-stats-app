@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { Zap, ArrowRight } from "lucide-react";
+import { Zap, ClipboardList, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SettingsPanel } from "@/components/settings-panel";
@@ -45,6 +45,28 @@ export default async function DashboardPage() {
               </h3>
               <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
                 {t("cards.electricity.description")}
+              </p>
+            </div>
+          </Link>
+
+          {/* Family Chores card */}
+          <Link
+            href="/chores"
+            id="card-chores"
+            className="group relative flex flex-col gap-4 rounded-xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5"
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex size-12 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500 transition-colors group-hover:bg-violet-500/20">
+                <ClipboardList className="size-6" />
+              </div>
+              <ArrowRight className="size-5 text-muted-foreground opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg leading-tight">
+                {t("cards.chores.title")}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                {t("cards.chores.description")}
               </p>
             </div>
           </Link>

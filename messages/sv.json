@@ -7,7 +7,48 @@
       "electricity": {
         "title": "Hushållsel",
         "description": "Följ kostnader, förbrukning och prisuppdelning för din hushållsel."
+      },
+      "chores": {
+        "title": "Sysslor",
+        "description": "Hjälp till hemma och samla poäng för utförda sysslor."
       }
+    }
+  },
+  "chores": {
+    "title": "Hemmasysslor",
+    "subtitle": "Hjälp till hemma och samla poäng för utförda sysslor",
+    "loading": "Laddar...",
+    "status": {
+      "ready": "Redo att startas",
+      "started": "Påbörjad",
+      "finished": "Klar",
+      "inspected": "Inspekterad av förälder"
+    },
+    "labels": {
+      "selectAssignee": "Vem ska göra detta?",
+      "assignedTo": "Utförs av"
+    },
+    "buttons": {
+      "start": "Starta",
+      "cancel": "Avbryt",
+      "finish": "Klar",
+      "inspect": "Inspekterad",
+      "reset": "Redo att starta"
+    },
+    "scoreboard": {
+      "title": "Poängtavla"
+    },
+    "tasks": {
+      "heading": "Aktiva sysslor",
+      "takeOutGarbage": "Ta ut soporna",
+      "fillDishwasher": "Fyll diskmaskinen",
+      "emptyDishwasher": "Töm diskmaskinen",
+      "vacuumUpstairs": "Dammsug övervåningen"
+    },
+    "pinPad": {
+      "title": "PIN-kod för förälder",
+      "cancel": "C",
+      "error": "Fel kod. Försök igen."
     }
   },
   "common": {

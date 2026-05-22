@@ -1,0 +1,18 @@
+{
+  "take-out-garbage": {
+    "status": "ready",
+    "assignee": null
+  },
+  "fill-dishwasher": {
+    "status": "ready",
+    "assignee": null
+  },
+  "empty-dishwasher": {
+    "status": "ready",
+    "assignee": null
+  },
+  "vacuum-upstairs": {
+    "status": "ready",
+    "assignee": null
+  }
+}

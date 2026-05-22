@@ -7,7 +7,48 @@
       "electricity": {
         "title": "Household Electricity",
         "description": "Track costs, consumption and price breakdowns for your household electricity."
+      },
+      "chores": {
+        "title": "Chores",
+        "description": "Help out at home and earn points by completing chores."
       }
+    }
+  },
+  "chores": {
+    "title": "Family Chores",
+    "subtitle": "Earn points by completing household tasks",
+    "loading": "Loading...",
+    "status": {
+      "ready": "Ready to be started",
+      "started": "Started",
+      "finished": "Finished",
+      "inspected": "Inspected by parent"
+    },
+    "labels": {
+      "selectAssignee": "Who is doing this?",
+      "assignedTo": "Assigned to"
+    },
+    "buttons": {
+      "start": "Start",
+      "cancel": "Cancel",
+      "finish": "Finished",
+      "inspect": "Inspected",
+      "reset": "Ready to start"
+    },
+    "scoreboard": {
+      "title": "Points Leaderboard"
+    },
+    "tasks": {
+      "heading": "Active Chores",
+      "takeOutGarbage": "Take out the garbage",
+      "fillDishwasher": "Fill the dishwasher",
+      "emptyDishwasher": "Empty the dishwasher",
+      "vacuumUpstairs": "Vacuum the upstairs"
+    },
+    "pinPad": {
+      "title": "Parent Verification PIN",
+      "cancel": "C",
+      "error": "Incorrect code. Please try again."
     }
   },
   "common": {
