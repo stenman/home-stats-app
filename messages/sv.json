@@ -1,4 +1,15 @@
 {
+  "dashboard": {
+    "title": "Hemstatistik",
+    "subtitle": "Översikt av ditt hushållsdata",
+    "categoriesHeading": "Kategorier",
+    "cards": {
+      "electricity": {
+        "title": "Hushållsel",
+        "description": "Följ kostnader, förbrukning och prisuppdelning för din hushållsel."
+      }
+    }
+  },
   "common": {
     "languageLabel": "Språk",
     "languageSwitchLabel": "Byt språk",

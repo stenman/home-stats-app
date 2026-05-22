@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ElectricityCharts } from "@/components/electricity/electricity-charts";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -13,6 +13,7 @@ type ElectricityPageProps = {
 
 export default async function ElectricityPage({ searchParams }: ElectricityPageProps) {
   const t = await getTranslations("electricity");
+  const tCommon = await getTranslations("dashboard");
   const params = await searchParams;
   const requestedYear = Number(params.year);
   const data = await getElectricityDashboardData(
@@ -24,6 +25,15 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
 
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <nav className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Link href="/" className="flex items-center gap-1 transition-colors hover:text-foreground">
+          <Home className="size-3.5" />
+          {tCommon("title")}
+        </Link>
+        <span>/</span>
+        <span className="text-foreground">{t("headerTitle")}</span>
+      </nav>
+
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-semibold tracking-tight">{t("headerTitle")}</h1>
         <div className="flex items-center gap-2">

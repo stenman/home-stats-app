@@ -1,4 +1,15 @@
 {
+  "dashboard": {
+    "title": "Home Statistics",
+    "subtitle": "Overview of your household data",
+    "categoriesHeading": "Categories",
+    "cards": {
+      "electricity": {
+        "title": "Household Electricity",
+        "description": "Track costs, consumption and price breakdowns for your household electricity."
+      }
+    }
+  },
   "common": {
     "languageLabel": "Language",
     "languageSwitchLabel": "Switch language",
