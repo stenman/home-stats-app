@@ -1,11 +1,11 @@
 {
   "take-out-garbage": {
-    "status": "ready",
-    "assignee": null
+    "status": "finished",
+    "assignee": "Vidar"
   },
   "fill-dishwasher": {
-    "status": "ready",
-    "assignee": null
+    "status": "started",
+    "assignee": "Vidar"
   },
   "empty-dishwasher": {
     "status": "ready",

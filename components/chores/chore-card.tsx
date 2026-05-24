@@ -23,8 +23,6 @@ type ChoreCardProps = {
 };
 
 const FAMILY_MEMBERS = [
-  { name: "Roger", emoji: "👨" },
-  { name: "Jenny", emoji: "👩" },
   { name: "Leia", emoji: "👧" },
   { name: "Vidar", emoji: "👦" },
   { name: "Tyra", emoji: "👶" },

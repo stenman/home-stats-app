@@ -8,8 +8,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Trophy, Star, Loader2 } from "lucide-react";
 
 const FAMILY_MEMBERS = [
-  { name: "Roger", emoji: "👨" },
-  { name: "Jenny", emoji: "👩" },
   { name: "Leia", emoji: "👧" },
   { name: "Vidar", emoji: "👦" },
   { name: "Tyra", emoji: "👶" },
@@ -93,7 +91,7 @@ export function ChoresBoard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 max-w-2xl">
               {FAMILY_MEMBERS.map((member) => {
                 const memberPoints = points[member.name] || 0;
                 return (
