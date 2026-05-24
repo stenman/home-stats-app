@@ -7,11 +7,8 @@ import { PinPad } from "./pin-pad";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Trophy, Star, Loader2 } from "lucide-react";
 
-const FAMILY_MEMBERS = [
-  { name: "Leia", emoji: "👧" },
-  { name: "Vidar", emoji: "👦" },
-  { name: "Tyra", emoji: "👶" },
-];
+import users from "../../data/chores-users.json";
+const FAMILY_MEMBERS = users;
 
 export function ChoresBoard() {
   const t = useTranslations("chores");
@@ -92,26 +89,26 @@ export function ChoresBoard() {
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 max-w-2xl">
-              {FAMILY_MEMBERS.map((member) => {
-                const memberPoints = points[member.name] || 0;
-                return (
-                  <div
-                    key={member.name}
-                    className="flex flex-col items-center justify-center p-4 rounded-xl border bg-card shadow-xs transition-all duration-200 hover:shadow-sm"
-                  >
-                    <span className="text-4xl filter drop-shadow-sm select-none mb-1">
-                      {member.emoji}
-                    </span>
-                    <span className="text-sm font-bold truncate max-w-full">
-                      {member.name}
-                    </span>
-                    <span className="mt-1 inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                      <Star className="size-3 fill-amber-500 text-amber-500" />
-                      {memberPoints}p
-                    </span>
-                  </div>
-                );
-              })}
+{FAMILY_MEMBERS.map((member) => {
+  const memberPoints = points[member.id] || 0;
+  return (
+    <div
+      key={member.name}
+      className="flex flex-col items-center justify-center p-4 rounded-xl border bg-card shadow-xs transition-all duration-200 hover:shadow-sm"
+    >
+      <span className="text-4xl filter drop-shadow-sm select-none mb-1">
+        {(member as any).emoji}
+      </span>
+      <span className="text-sm font-bold truncate max-w-full">
+        {member.name}
+      </span>
+      <span className="mt-1 inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
+        <Star className="size-3 fill-amber-500 text-amber-500" />
+        {memberPoints}p
+      </span>
+    </div>
+  );
+})}
             </div>
           </CardContent>
         </Card>

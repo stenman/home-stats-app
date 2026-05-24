@@ -1,0 +1,5 @@
+[
+  {"id": 1, "name": "User1", emoji: "👧"},
+  {"id": 2, "name": "User2", emoji: "👦"},
+  {"id": 3, "name": "User3", emoji: "👶"}
+]

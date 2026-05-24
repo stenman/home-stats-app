@@ -41,7 +41,13 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { action, choreId, assignee } = body;
+    const { action, choreId, assignee: assigneeName } = body;
+    let assignee = assigneeName;
+    if (assignee) {
+      const users = await readJson(path.join(DATA_DIR, "chores-users.json"));
+      const user = users.find((u: any) => u.name === assignee);
+      if (user) assignee = String(user.id);
+    }
 
     const tasks = await readJson(DATA_FILE, []);
     const states = await readJson(STATE_FILE, {});
@@ -64,6 +70,9 @@ export async function POST(request: Request) {
         }
         state.status = "started";
         state.assignee = assignee;
+        if (points[assignee] === undefined) {
+          points[assignee] = 0;
+        }
         break;
 
       case "finish":

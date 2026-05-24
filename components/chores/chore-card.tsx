@@ -22,11 +22,8 @@ type ChoreCardProps = {
   onRequestInspect: (choreId: string) => void;
 };
 
-const FAMILY_MEMBERS = [
-  { name: "Leia", emoji: "👧" },
-  { name: "Vidar", emoji: "👦" },
-  { name: "Tyra", emoji: "👶" },
-];
+import users from "../../data/chores-users.json";
+const FAMILY_MEMBERS = users;
 
 export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps) {
   const t = useTranslations("chores");
@@ -73,7 +70,9 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
     }
   };
 
-  const currentAssigneeEmoji = FAMILY_MEMBERS.find((m) => m.name === chore.assignee)?.emoji || "👤";
+  const currentAssignee = FAMILY_MEMBERS.find((m) => String(m.id) === chore.assignee);
+  const currentAssigneeEmoji = currentAssignee?.emoji || "👤";
+  const currentAssigneeName = currentAssignee?.name || chore.assignee;
 
   return (
     <div
@@ -122,7 +121,7 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
                           : "bg-background border-border hover:bg-muted text-foreground"
                       }`}
                     >
-                      <span className="text-2xl select-none">{member.emoji}</span>
+                      <span className="text-2xl select-none">{(member as any).emoji}</span>
                       <span className="text-[10px] truncate max-w-full px-1">{member.name}</span>
                     </button>
                   );
@@ -138,7 +137,7 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
                 <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("labels.assignedTo")}
                 </div>
-                <div className="font-bold text-sm text-foreground">{chore.assignee}</div>
+              <div className="font-bold text-sm text-foreground">{currentAssigneeName}</div>
               </div>
             </div>
           )}
