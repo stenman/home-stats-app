@@ -71,8 +71,10 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
   };
 
   const currentAssignee = FAMILY_MEMBERS.find((m) => String(m.id) === chore.assignee);
+  const avatarPath = `/avatars/${currentAssignee?.name?.toLowerCase()}.png`;
   const currentAssigneeEmoji = currentAssignee?.emoji || "👤";
-  const currentAssigneeName = currentAssignee?.name || chore.assignee;
+  const currentAssigneeImage = currentAssignee?.name ? avatarPath : undefined;
+  const currentAssigneeName = currentAssignee?.name || chore.assignee || "";
 
   return (
     <div
@@ -103,41 +105,76 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
         {/* Middle Content: Assignee Avatar Selection or Assignee Display */}
         <div className="my-6">
           {chore.status === "ready" ? (
-            <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-2">
-                {t("labels.selectAssignee")}
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {FAMILY_MEMBERS.map((member) => {
-                  const isSelected = selectedAssignee === member.name;
-                  return (
-                    <button
-                      key={member.name}
-                      type="button"
-                      onClick={() => setSelectedAssignee(isSelected ? null : member.name)}
-                      className={`flex flex-col items-center justify-center gap-1 size-16 rounded-xl border transition-all duration-200 active:scale-95 touch-manipulation shadow-sm ${
-                        isSelected
-                          ? "bg-primary border-primary text-primary-foreground scale-105 font-bold shadow-md"
-                          : "bg-background border-border hover:bg-muted text-foreground"
-                      }`}
-                    >
-                      <span className="text-2xl select-none">{(member as any).emoji}</span>
-                      <span className="text-[10px] truncate max-w-full px-1">{member.name}</span>
-                    </button>
-                  );
-                })}
+            chore.assignee ? (
+              <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
+                <div>
+                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t("labels.assignedTo")}
+                  </div>
+                  {currentAssigneeImage ? (
+                    <img src={currentAssigneeImage} alt={currentAssigneeName} className="w-8 h-8 rounded-full" />
+                  ) : (
+                    <span className="font-bold text-sm text-foreground">{currentAssigneeEmoji} {currentAssigneeName}</span>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-2">
+                  {t("labels.selectAssignee")}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {FAMILY_MEMBERS.map((member) => {
+                    const isSelected = selectedAssignee === member.name;
+                    const memberAvatarPath = `/avatars/${member.name?.toLowerCase()}.png`;
+                    const memberHasAvatar = member.name;
+                    return (
+                      <button
+                        key={member.name}
+                        type="button"
+                        onClick={() => setSelectedAssignee(isSelected ? null : member.name)}
+                        className={`flex flex-col items-center justify-center gap-1 size-16 rounded-xl border transition-all duration-200 active:scale-95 touch-manipulation shadow-sm ${
+                          isSelected
+                            ? "bg-primary border-primary text-primary-foreground scale-105 font-bold shadow-md"
+                            : "bg-background border-border hover:bg-muted text-foreground"
+                        }`}
+                      >
+                        {memberHasAvatar ? (
+                          <img src={memberAvatarPath} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
+                        ) : (
+                          <span className="text-2xl select-none">{(member as any).emoji}</span>
+                        )}
+                        <span className="text-[10px] truncate max-w-full px-1">{member.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )
           ) : chore.status === "inspected" ? (
-            <div className="h-[74px]" /> /* Spacer to match the height of assignee display */
-          ) : (
             <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
-              <span className="text-3xl filter drop-shadow-xs select-none">{currentAssigneeEmoji}</span>
               <div>
                 <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                   {t("labels.assignedTo")}
                 </div>
-              <div className="font-bold text-sm text-foreground">{currentAssigneeName}</div>
+                {currentAssigneeImage ? (
+                  <img src={currentAssigneeImage} alt={currentAssigneeName} className="w-8 h-8 rounded-full" />
+                ) : (
+                  <span className="font-bold text-sm text-foreground">{currentAssigneeName}</span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
+              <div>
+                <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  {t("labels.assignedTo")}
+                </div>
+{currentAssigneeImage ? (
+  <img src={currentAssigneeImage} alt={currentAssigneeName} className="w-8 h-8 rounded-full" />
+) : (
+  <span className="font-bold text-sm text-foreground">{currentAssigneeName}</span>
+)}
               </div>
             </div>
           )}

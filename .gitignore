@@ -43,3 +43,4 @@ data/chores-points.json
 data/chores-state.json
 data/chores-users.json
 original_plan.md
+public/avatars/*.png
