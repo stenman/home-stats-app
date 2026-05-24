@@ -41,3 +41,4 @@ yarn-error.log*
 next-env.d.ts
 data/chores-points.json
 data/chores-state.json
+original_plan.md
