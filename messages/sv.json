@@ -33,8 +33,13 @@
       "cancel": "Avbryt",
       "finish": "Klar",
       "inspect": "Inspekterad",
+      "back": "Tillbaka",
+      "redo": "Gör om",
       "reset": "Redo att starta"
     },
+
+
+
     "scoreboard": {
       "title": "Poängtavla"
     },

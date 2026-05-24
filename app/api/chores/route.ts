@@ -99,7 +99,26 @@ export async function POST(request: Request) {
         state.assignee = null;
         break;
 
+      case "redo":
+        if (state.status !== "finished") {
+          return NextResponse.json({ error: "Chore must be finished to redo" }, { status: 400 });
+        }
+        state.status = "ready";
+        state.assignee = null;
+        // No points awarded for redo
+        break;
+
+      case "unready":
+        if (state.status !== "ready") {
+          return NextResponse.json({ error: "Chore must be ready to unready" }, { status: 400 });
+        }
+        state.status = "inspected";
+        state.assignee = null;
+        break;
+
       default:
+
+
         return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
 

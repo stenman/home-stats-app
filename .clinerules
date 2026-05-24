@@ -1,0 +1,8 @@
+# Local LLM Behavior Rules
+
+When modifying or updating files in this workspace, you must adhere to the following rules:
+
+1. **Physical File Writing:** Do not just output or preview the code blocks inside the chat window. You must explicitly invoke the actual file-writing/patching tools (`write_to_file` or `apply_diff`) to overwrite the files on disk.
+2. **Persistence:** Ensure that all code changes are physically saved to the hard drive so they are properly captured by Git and visible in VS Code's Source Control panel.
+3. **No Placeholders:** Write out the complete code when updating files. Avoid using placeholders like `// ... rest of the code remains the same`.
+4. **Strict Paths:** Never use the `@workspace` prefix when writing or creating files. Always use relative paths directly from the project root (e.g., use `components/my-file.ts` or `lib/electricity-data.ts`, NEVER `@workspace/components/my-file.ts`).

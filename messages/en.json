@@ -33,8 +33,13 @@
       "cancel": "Cancel",
       "finish": "Finished",
       "inspect": "Inspected",
+      "back": "Back",
+      "redo": "Redo task",
       "reset": "Ready to start"
     },
+
+
+
     "scoreboard": {
       "title": "Points Leaderboard"
     },

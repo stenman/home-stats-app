@@ -62,6 +62,10 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
 
   const config = statusConfig[chore.status];
 
+  React.useEffect(() => {
+    setSelectedAssignee(null);
+  }, [chore.status]);
+
   const handleStart = () => {
     if (selectedAssignee) {
       onAction(chore.id, "start", selectedAssignee);
@@ -125,6 +129,8 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
                 })}
               </div>
             </div>
+          ) : chore.status === "inspected" ? (
+            <div className="h-[74px]" /> /* Spacer to match the height of assignee display */
           ) : (
             <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
               <span className="text-3xl filter drop-shadow-xs select-none">{currentAssigneeEmoji}</span>
@@ -142,15 +148,26 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
       {/* Bottom Footer: Dynamic Action Buttons */}
       <div className="mt-4 pt-3 border-t border-border/10 flex items-center justify-end gap-2">
         {chore.status === "ready" && (
-          <Button
-            size="lg"
-            className="w-full font-bold h-12 shadow-sm rounded-xl"
-            disabled={!selectedAssignee}
-            onClick={handleStart}
-          >
-            <Play className="size-4 mr-1.5" />
-            {t("buttons.start")}
-          </Button>
+          <div className="flex w-full gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              className="flex-1 font-bold h-12 rounded-xl border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+              onClick={() => onAction(chore.id, "unready")}
+            >
+              <RotateCcw className="size-4 mr-1.5" />
+              {t("buttons.back")}
+            </Button>
+            <Button
+              size="lg"
+              className="flex-1 font-bold h-12 shadow-sm rounded-xl"
+              disabled={!selectedAssignee}
+              onClick={handleStart}
+            >
+              <Play className="size-4 mr-1.5" />
+              {t("buttons.start")}
+            </Button>
+          </div>
         )}
 
         {chore.status === "started" && (
@@ -176,14 +193,25 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
         )}
 
         {chore.status === "finished" && (
-          <Button
-            size="lg"
-            className="w-full font-bold h-12 rounded-xl bg-primary text-primary-foreground shadow-sm"
-            onClick={() => onRequestInspect(chore.id)}
-          >
-            <ShieldCheck className="size-4 mr-1.5" />
-            {t("buttons.inspect")}
-          </Button>
+          <>
+            <Button
+              variant="outline"
+              size="lg"
+              className="flex-1 font-semibold h-12 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive active:bg-destructive/10"
+              onClick={() => onAction(chore.id, "redo")}
+            >
+              <Play className="size-4 mr-1.5" />
+              {t("buttons.redo")}
+            </Button>
+            <Button
+              size="lg"
+              className="flex-1 font-bold h-12 rounded-xl bg-primary text-primary-foreground shadow-sm"
+              onClick={() => onRequestInspect(chore.id)}
+            >
+              <ShieldCheck className="size-4 mr-1.5" />
+              {t("buttons.inspect")}
+            </Button>
+          </>
         )}
 
         {chore.status === "inspected" && (
