@@ -91,14 +91,20 @@ export function ChoresBoard() {
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 max-w-2xl">
 {FAMILY_MEMBERS.map((member) => {
   const memberPoints = points[member.id] || 0;
+  const avatarPath = `/avatars/${member.name?.toLowerCase()}.png`;
+  const hasAvatar = member.name;
   return (
     <div
       key={member.name}
       className="flex flex-col items-center justify-center p-4 rounded-xl border bg-card shadow-xs transition-all duration-200 hover:shadow-sm"
     >
-      <span className="text-4xl filter drop-shadow-sm select-none mb-1">
-        {(member as any).emoji}
-      </span>
+      {hasAvatar ? (
+        <img src={avatarPath} alt={member.name} className="w-12 h-12 rounded-full object-cover mb-1" />
+      ) : (
+        <span className="text-4xl filter drop-shadow-sm select-none mb-1">
+          {(member as any).emoji}
+        </span>
+      )}
       <span className="text-sm font-bold truncate max-w-full">
         {member.name}
       </span>

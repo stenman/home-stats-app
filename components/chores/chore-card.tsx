@@ -108,9 +108,9 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
             chore.assignee ? (
               <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
                 <div>
-                  <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t("labels.assignedTo")}
-                  </div>
+            <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              {t("labels.assignedTo")}
+            </div>
                   {currentAssigneeImage ? (
                     <img src={currentAssigneeImage} alt={currentAssigneeName} className="w-8 h-8 rounded-full" />
                   ) : (
@@ -152,18 +152,7 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
               </div>
             )
           ) : chore.status === "inspected" ? (
-            <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
-              <div>
-                <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  {t("labels.assignedTo")}
-                </div>
-                {currentAssigneeImage ? (
-                  <img src={currentAssigneeImage} alt={currentAssigneeName} className="w-8 h-8 rounded-full" />
-                ) : (
-                  <span className="font-bold text-sm text-foreground">{currentAssigneeName}</span>
-                )}
-              </div>
-            </div>
+            null
           ) : (
             <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
               <div>
