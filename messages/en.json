@@ -26,7 +26,8 @@
     },
     "labels": {
       "selectAssignee": "Who is doing this?",
-      "assignedTo": "Assigned to"
+      "assignedTo": "Assigned to",
+      "lastDoneBy": "Last done by"
     },
     "buttons": {
       "start": "Start",
@@ -41,7 +42,10 @@
 
 
     "scoreboard": {
-      "title": "Points Leaderboard"
+      "title": "Points Leaderboard",
+      "historyTitle": "Completion history",
+      "historyEmpty": "No chores completed yet.",
+      "timesSuffix": "×"
     },
     "tasks": {
       "heading": "Active Chores",

@@ -6,6 +6,34 @@ const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "chores-data.json");
 const STATE_FILE = path.join(DATA_DIR, "chores-state.json");
 const POINTS_FILE = path.join(DATA_DIR, "chores-points.json");
+const HISTORY_FILE = path.join(DATA_DIR, "chores-history.json");
+
+type HistoryEntry = {
+  userId: string;
+  choreId: string;
+  points: number;
+  at: string;
+};
+
+function deriveCounts(history: HistoryEntry[]) {
+  const counts: Record<string, Record<string, number>> = {};
+  for (const entry of history) {
+    if (!counts[entry.userId]) counts[entry.userId] = {};
+    counts[entry.userId][entry.choreId] = (counts[entry.userId][entry.choreId] || 0) + 1;
+  }
+  return counts;
+}
+
+function deriveLastDoneBy(history: HistoryEntry[]) {
+  const last: Record<string, { userId: string; at: string }> = {};
+  for (const entry of history) {
+    const prev = last[entry.choreId];
+    if (!prev || entry.at > prev.at) {
+      last[entry.choreId] = { userId: entry.userId, at: entry.at };
+    }
+  }
+  return last;
+}
 
 async function readJson(filePath: string, defaultValue: any = {}) {
   try {
@@ -25,6 +53,7 @@ export async function GET() {
   const tasks = await readJson(DATA_FILE, []);
   const states = await readJson(STATE_FILE, {});
   const points = await readJson(POINTS_FILE, {});
+  const history = (await readJson(HISTORY_FILE, [])) as HistoryEntry[];
 
   const chores = tasks.map((task: any) => {
     const state = states[task.id] || { status: "ready", assignee: null };
@@ -35,7 +64,12 @@ export async function GET() {
     };
   });
 
-  return NextResponse.json({ chores, points });
+  return NextResponse.json({
+    chores,
+    points,
+    counts: deriveCounts(history),
+    lastDoneBy: deriveLastDoneBy(history),
+  });
 }
 
 export async function POST(request: Request) {
@@ -52,6 +86,8 @@ export async function POST(request: Request) {
     const tasks = await readJson(DATA_FILE, []);
     const states = await readJson(STATE_FILE, {});
     const points = await readJson(POINTS_FILE, {});
+    const history = (await readJson(HISTORY_FILE, [])) as HistoryEntry[];
+    let historyChanged = false;
 
     const task = tasks.find((t: any) => t.id === choreId);
     if (!task) {
@@ -97,6 +133,13 @@ export async function POST(request: Request) {
         state.status = "inspected";
         if (state.assignee && points[state.assignee] !== undefined) {
           points[state.assignee] += task.points;
+          history.push({
+            userId: state.assignee,
+            choreId,
+            points: task.points,
+            at: new Date().toISOString(),
+          });
+          historyChanged = true;
         }
         break;
 
@@ -134,6 +177,9 @@ export async function POST(request: Request) {
     states[choreId] = state;
     await writeJson(STATE_FILE, states);
     await writeJson(POINTS_FILE, points);
+    if (historyChanged) {
+      await writeJson(HISTORY_FILE, history);
+    }
 
     const chores = tasks.map((t: any) => {
       const s = states[t.id] || { status: "ready", assignee: null };
@@ -144,7 +190,12 @@ export async function POST(request: Request) {
       };
     });
 
-    return NextResponse.json({ chores, points });
+    return NextResponse.json({
+      chores,
+      points,
+      counts: deriveCounts(history),
+      lastDoneBy: deriveLastDoneBy(history),
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

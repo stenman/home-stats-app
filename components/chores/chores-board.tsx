@@ -10,12 +10,18 @@ import { Trophy, Star, Loader2 } from "lucide-react";
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
 
+type CountsByUser = Record<string, Record<string, number>>;
+type LastDoneByMap = Record<string, { userId: string; at: string }>;
+
 export function ChoresBoard() {
   const t = useTranslations("chores");
   const [chores, setChores] = useState<Chore[]>([]);
   const [points, setPoints] = useState<Record<string, number>>({});
+  const [counts, setCounts] = useState<CountsByUser>({});
+  const [lastDoneBy, setLastDoneBy] = useState<LastDoneByMap>({});
   const [loading, setLoading] = useState(true);
   const [inspectingChoreId, setInspectingChoreId] = useState<string | null>(null);
+  const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
 
   // Fetch initial data
   const fetchData = async () => {
@@ -24,6 +30,8 @@ export function ChoresBoard() {
       const data = await res.json();
       setChores(data.chores || []);
       setPoints(data.points || {});
+      setCounts(data.counts || {});
+      setLastDoneBy(data.lastDoneBy || {});
     } catch (err) {
       console.error("Error fetching chores data:", err);
     } finally {
@@ -46,6 +54,8 @@ export function ChoresBoard() {
       if (res.ok) {
         setChores(data.chores || []);
         setPoints(data.points || {});
+        if (data.counts) setCounts(data.counts);
+        if (data.lastDoneBy) setLastDoneBy(data.lastDoneBy);
       } else {
         alert(data.error || "Action failed");
       }
@@ -90,13 +100,18 @@ export function ChoresBoard() {
           <CardContent className="p-4 sm:p-6">
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 max-w-2xl">
 {FAMILY_MEMBERS.map((member) => {
-  const memberPoints = points[member.id] || 0;
+  const memberId = String(member.id);
+  const memberPoints = points[memberId] || 0;
   const avatarPath = `/avatars/${member.name?.toLowerCase()}.png`;
   const hasAvatar = member.name;
+  const isExpanded = expandedUserId === memberId;
   return (
-    <div
+    <button
+      type="button"
       key={member.name}
-      className="flex flex-col items-center justify-center p-4 rounded-xl border bg-card shadow-xs transition-all duration-200 hover:shadow-sm"
+      aria-expanded={isExpanded}
+      onClick={() => setExpandedUserId(isExpanded ? null : memberId)}
+      className={`flex flex-col items-center justify-center p-4 rounded-xl border bg-card shadow-xs transition-all duration-200 hover:shadow-sm text-left touch-manipulation ${isExpanded ? "ring-2 ring-primary" : ""}`}
     >
       {hasAvatar ? (
         <img src={avatarPath} alt={member.name} className="w-12 h-12 rounded-full object-cover mb-1" />
@@ -112,10 +127,48 @@ export function ChoresBoard() {
         <Star className="size-3 fill-amber-500 text-amber-500" />
         {memberPoints}p
       </span>
-    </div>
+    </button>
   );
 })}
             </div>
+            {expandedUserId !== null ? (() => {
+              const expandedMember = FAMILY_MEMBERS.find((m) => String(m.id) === expandedUserId);
+              if (!expandedMember) return null;
+              const userCounts = counts[expandedUserId] || {};
+              const rows = chores
+                .map((chore) => ({ chore, count: userCounts[chore.id] || 0 }))
+                .filter((row) => row.count > 0)
+                .sort((a, b) => b.count - a.count);
+              return (
+                <div className="mt-4 rounded-xl border bg-muted/30 p-4">
+                  <div className="mb-3 text-sm font-semibold">
+                    {expandedMember.name} — {t("scoreboard.historyTitle")}
+                  </div>
+                  {rows.length === 0 ? (
+                    <div className="text-sm text-muted-foreground">
+                      {t("scoreboard.historyEmpty")}
+                    </div>
+                  ) : (
+                    <ul className="space-y-2">
+                      {rows.map(({ chore, count }) => (
+                        <li
+                          key={chore.id}
+                          className="flex items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2"
+                        >
+                          <span className="flex items-center gap-2 text-sm">
+                            <span className="text-xl select-none">{chore.icon}</span>
+                            {t(`tasks.${chore.titleKey}`)}
+                          </span>
+                          <span className="text-sm font-bold tabular-nums">
+                            {count} {t("scoreboard.timesSuffix")}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })() : null}
           </CardContent>
         </Card>
       </section>
@@ -134,6 +187,7 @@ export function ChoresBoard() {
               chore={chore}
               onAction={handleAction}
               onRequestInspect={handleInspectRequest}
+              lastDoneByUserId={lastDoneBy[chore.id]?.userId ?? null}
             />
           ))}
         </div>

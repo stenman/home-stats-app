@@ -26,7 +26,8 @@
     },
     "labels": {
       "selectAssignee": "Vem ska göra detta?",
-      "assignedTo": "Utförs av"
+      "assignedTo": "Utförs av",
+      "lastDoneBy": "Senast utförd av"
     },
     "buttons": {
       "start": "Starta",
@@ -41,7 +42,10 @@
 
 
     "scoreboard": {
-      "title": "Poängtavla"
+      "title": "Poängtavla",
+      "historyTitle": "Genomförd historik",
+      "historyEmpty": "Inga avklarade sysslor än.",
+      "timesSuffix": "ggr"
     },
     "tasks": {
       "heading": "Aktiva sysslor",

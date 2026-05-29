@@ -20,14 +20,18 @@ type ChoreCardProps = {
   chore: Chore;
   onAction: (choreId: string, action: string, assignee?: string) => void;
   onRequestInspect: (choreId: string) => void;
+  lastDoneByUserId: string | null;
 };
 
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
 
-export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps) {
+export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId }: ChoreCardProps) {
   const t = useTranslations("chores");
   const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null);
+  const lastDoneByUser = lastDoneByUserId
+    ? FAMILY_MEMBERS.find((m) => String(m.id) === lastDoneByUserId)
+    : null;
 
   // Status configuration
   const statusConfig = {
@@ -98,6 +102,11 @@ export function ChoreCard({ chore, onAction, onRequestInspect }: ChoreCardProps)
                   {config.indicator}
                 </span>
               </div>
+              {lastDoneByUser ? (
+                <div className="mt-1 text-[11px] text-muted-foreground">
+                  {t("labels.lastDoneBy")} {lastDoneByUser.name}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
