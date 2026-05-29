@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Zap, ClipboardList, ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SettingsPanel } from "@/components/settings-panel";
 
 export default async function DashboardPage() {
@@ -17,7 +16,6 @@ export default async function DashboardPage() {
           <p className="mt-1 text-muted-foreground">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
-          <LocaleSwitcher />
           <SettingsPanel />
         </div>
       </div>
