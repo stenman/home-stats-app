@@ -119,7 +119,7 @@ export function ElectricityCharts({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 100, height: 100 }}>
               <AreaChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
@@ -178,7 +178,7 @@ export function ElectricityCharts({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 100, height: 100 }}>
               <AreaChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
@@ -247,7 +247,7 @@ export function ElectricityCharts({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 100, height: 100 }}>
               <AreaChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
@@ -285,7 +285,7 @@ export function ElectricityCharts({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 100, height: 100 }}>
               <AreaChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
