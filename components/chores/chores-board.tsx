@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Chore, ChoreCard } from "./chore-card";
 import { PinPad } from "./pin-pad";
+import { InspectCelebration } from "./inspect-celebration";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Trophy, Star, Loader2 } from "lucide-react";
 
@@ -12,6 +13,12 @@ const FAMILY_MEMBERS = users;
 
 type CountsByUser = Record<string, Record<string, number>>;
 type LastDoneByMap = Record<string, { userId: string; at: string }>;
+type Celebration = {
+  userName: string;
+  avatarSrc: string | null;
+  emoji: string;
+  points: number;
+};
 
 export function ChoresBoard() {
   const t = useTranslations("chores");
@@ -22,6 +29,7 @@ export function ChoresBoard() {
   const [loading, setLoading] = useState(true);
   const [inspectingChoreId, setInspectingChoreId] = useState<string | null>(null);
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+  const [celebration, setCelebration] = useState<Celebration | null>(null);
 
   // Fetch initial data
   const fetchData = async () => {
@@ -56,11 +64,13 @@ export function ChoresBoard() {
         setPoints(data.points || {});
         if (data.counts) setCounts(data.counts);
         if (data.lastDoneBy) setLastDoneBy(data.lastDoneBy);
-      } else {
-        alert(data.error || "Action failed");
+        return true;
       }
+      alert(data.error || "Action failed");
+      return false;
     } catch (err) {
       console.error(`Error sending action ${action}:`, err);
+      return false;
     }
   };
 
@@ -69,9 +79,20 @@ export function ChoresBoard() {
   };
 
   const handleInspectSuccess = async () => {
-    if (inspectingChoreId) {
-      await handleAction(inspectingChoreId, "inspect");
-      setInspectingChoreId(null);
+    if (!inspectingChoreId) return;
+    const chore = chores.find((c) => c.id === inspectingChoreId);
+    const assignee = chore?.assignee
+      ? FAMILY_MEMBERS.find((m) => String(m.id) === chore.assignee)
+      : null;
+    const succeeded = await handleAction(inspectingChoreId, "inspect");
+    setInspectingChoreId(null);
+    if (succeeded && chore && assignee) {
+      setCelebration({
+        userName: assignee.name,
+        avatarSrc: assignee.name ? `/avatars/${assignee.name.toLowerCase()}.png` : null,
+        emoji: (assignee as any).emoji ?? "🎉",
+        points: chore.points,
+      });
     }
   };
 
@@ -201,6 +222,15 @@ export function ChoresBoard() {
         title={t("pinPad.title")}
         cancelLabel={t("pinPad.cancel")}
         errorLabel={t("pinPad.error")}
+      />
+
+      <InspectCelebration
+        open={celebration !== null}
+        userName={celebration?.userName ?? ""}
+        avatarSrc={celebration?.avatarSrc ?? null}
+        emoji={celebration?.emoji ?? "🎉"}
+        points={celebration?.points ?? 0}
+        onClose={() => setCelebration(null)}
       />
     </div>
   );
