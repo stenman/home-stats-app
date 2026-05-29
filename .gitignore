@@ -44,3 +44,4 @@ data/chores-state.json
 data/chores-users.json
 original_plan.md
 public/avatars/*.png
+data/chores-history.json

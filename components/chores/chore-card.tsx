@@ -98,9 +98,11 @@ export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId 
                   <Zap className="size-3" />
                   {chore.points}p
                 </span>
-                <span className="text-xs text-muted-foreground font-medium">
-                  {config.indicator}
-                </span>
+                {chore.status !== "inspected" ? (
+                  <span className="text-xs text-muted-foreground font-medium">
+                    {config.indicator}
+                  </span>
+                ) : null}
               </div>
               {lastDoneByUser ? (
                 <div className="mt-1 text-[11px] text-muted-foreground">
