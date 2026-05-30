@@ -15,7 +15,7 @@ export default async function DashboardPage() {
           </h1>
           <p className="mt-1 text-muted-foreground">{t("subtitle")}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2">
           <SettingsPanel />
         </div>
       </div>
