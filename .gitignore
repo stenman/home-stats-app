@@ -45,3 +45,6 @@ data/chores-users.json
 original_plan.md
 public/avatars/*.png
 data/chores-history.json
+
+# deploy staging dir for Pi (built by deploy-to-pi.sh)
+/.deploy/
