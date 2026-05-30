@@ -63,6 +63,10 @@
       "title": "Parent Verification PIN",
       "cancel": "C",
       "error": "Incorrect code. Please try again."
+    },
+    "choreEdit": {
+      "editChorePoints": "Edit points",
+      "points": "Points"
     }
   },
   "common": {

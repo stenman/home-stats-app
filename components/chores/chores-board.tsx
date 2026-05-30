@@ -34,6 +34,8 @@ export function ChoresBoard() {
   const [pendingEditUserId, setPendingEditUserId] = useState<string | null>(null);
   const [editingPointsUserId, setEditingPointsUserId] = useState<string | null>(null);
   const [setToInput, setSetToInput] = useState<string>("");
+  const [pendingEditChoreId, setPendingEditChoreId] = useState<string | null>(null);
+  const [editingPointsChoreId, setEditingPointsChoreId] = useState<string | null>(null);
 
   // Fetch initial data
   const fetchData = async () => {
@@ -117,12 +119,41 @@ export function ChoresBoard() {
       setEditingPointsUserId(pendingEditUserId);
       setSetToInput(String(points[pendingEditUserId] ?? 0));
       setPendingEditUserId(null);
+      return;
+    }
+    if (pendingEditChoreId) {
+      setEditingPointsChoreId(pendingEditChoreId);
+      setPendingEditChoreId(null);
     }
   };
 
   const closePinPad = () => {
     setInspectingChoreId(null);
     setPendingEditUserId(null);
+    setPendingEditChoreId(null);
+  };
+
+  const handleSetChorePoints = async (choreId: string, newPoints: number) => {
+    try {
+      const res = await fetch("/api/chores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "set-chore-points", choreId, points: newPoints }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setChores(data.chores || []);
+        setPoints(data.points || {});
+        if (data.counts) setCounts(data.counts);
+        if (data.lastDoneBy) setLastDoneBy(data.lastDoneBy);
+        return true;
+      }
+      alert(data.error || "Update failed");
+      return false;
+    } catch (err) {
+      console.error("Error updating chore points:", err);
+      return false;
+    }
   };
 
   const handleInspectSuccess = async () => {
@@ -334,6 +365,14 @@ export function ChoresBoard() {
               onAction={handleAction}
               onRequestInspect={handleInspectRequest}
               lastDoneByUserId={lastDoneBy[chore.id]?.userId ?? null}
+              isEditingPoints={editingPointsChoreId === chore.id}
+              onRequestEditPoints={() => setPendingEditChoreId(chore.id)}
+              onSavePoints={async (newPoints) => {
+                const ok = await handleSetChorePoints(chore.id, newPoints);
+                if (ok) setEditingPointsChoreId(null);
+                return ok;
+              }}
+              onCancelEditPoints={() => setEditingPointsChoreId(null)}
             />
           ))}
         </div>
@@ -341,7 +380,11 @@ export function ChoresBoard() {
 
       {/* Parent PIN Overlay */}
       <PinPad
-        isOpen={inspectingChoreId !== null || pendingEditUserId !== null}
+        isOpen={
+          inspectingChoreId !== null ||
+          pendingEditUserId !== null ||
+          pendingEditChoreId !== null
+        }
         onClose={closePinPad}
         onSuccess={handlePinSuccess}
         title={t("pinPad.title")}

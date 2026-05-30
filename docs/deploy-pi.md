@@ -297,20 +297,26 @@ Then run the deploy script. Runtime state files (`chores-state.json`,
 `chores-points.json`, `chores-history.json`) are created on first API hit by
 the `writeJson` helper in [app/api/chores/route.ts](../app/api/chores/route.ts).
 
-`chores-users.json` is **not** auto-created — it has to exist before any chore
-can be started (the API reads it in the `start` action to map names to IDs).
-Either:
+`chores-users.json` and `chores-data.json` are **not** auto-created — both
+must exist before the chores page works. The API reads `chores-users.json` in
+the `start` action to map names to IDs, and reads `chores-data.json` on every
+page load to list the available chores. Both are committed to the repo as
+`*.default` templates; bootstrap each the same way:
 
 ```bash
-# Option A: copy your existing users from the dev machine to the Pi (from WSL)
+# Option A: copy your existing versions from the dev machine to the Pi (from WSL)
 scp data/chores-users.json homestats:/srv/homestats/data/
+scp data/chores-data.json  homestats:/srv/homestats/data/
 
-# Option B: seed from the committed template, then edit on the Pi
+# Option B: seed from the committed templates, then edit on the Pi
 ssh homestats "cp /srv/homestats/data/chores-users.json.default /srv/homestats/data/chores-users.json"
+ssh homestats "cp /srv/homestats/data/chores-data.json.default  /srv/homestats/data/chores-data.json"
 ```
 
-If you want to migrate existing chore history too, scp those JSON files into
-`/srv/homestats/data/` once before starting the service.
+Both files become runtime state on the Pi — deploys won't overwrite them, and
+chore-points edits made via the in-app editor persist. If you want to migrate
+existing chore history too, scp those JSON files into `/srv/homestats/data/`
+once before starting the service.
 
 ## Step 7 — Verification
 

@@ -93,6 +93,34 @@ export async function POST(request: Request) {
     const history = (await readJson(HISTORY_FILE, [])) as HistoryEntry[];
     let historyChanged = false;
 
+    if (action === "set-chore-points") {
+      const { points: newPoints } = body;
+      if (typeof choreId !== "string" || !choreId) {
+        return NextResponse.json({ error: "choreId is required" }, { status: 400 });
+      }
+      if (!Number.isFinite(newPoints) || !Number.isInteger(newPoints) || newPoints < 0) {
+        return NextResponse.json({ error: "points must be a non-negative integer" }, { status: 400 });
+      }
+      const idx = tasks.findIndex((t: any) => t.id === choreId);
+      if (idx === -1) {
+        return NextResponse.json({ error: "Task not found" }, { status: 404 });
+      }
+      if (tasks[idx].points !== newPoints) {
+        tasks[idx].points = newPoints;
+        await writeJson(DATA_FILE, tasks);
+      }
+      const chores = tasks.map((t: any) => {
+        const s = states[t.id] || { status: "ready", assignee: null };
+        return { ...t, status: s.status, assignee: s.assignee };
+      });
+      return NextResponse.json({
+        chores,
+        points,
+        counts: deriveCounts(history),
+        lastDoneBy: deriveLastDoneBy(history),
+      });
+    }
+
     if (action === "adjust") {
       const { userId, delta, setTo } = body;
       if (typeof userId !== "string" || !userId) {

@@ -21,10 +21,10 @@ cp -r .next/static .deploy/.next/static
 cp -r public .deploy/public
 cp -r messages .deploy/messages
 
-# Ship to the Pi — preserve runtime data dir on the remote
+# Ship to the Pi — preserve runtime data dir on the remote (chores-data.json
+# is now runtime state on the Pi, edited via the in-app editor, so we leave it
+# alone too — bootstrap from chores-data.json.default on first run).
 rsync -avz --delete --exclude='data/' .deploy/ "${PI_TARGET}:${REMOTE_DIR}/"
-# Push only the committed chore definitions (safe to overwrite)
-rsync -avz data/chores-data.json "${PI_TARGET}:${REMOTE_DIR}/data/chores-data.json"
 
 ssh "${PI_TARGET}" "sudo systemctl restart homestats"
 echo "Deployed. Open http://${PI_HOST}/"

@@ -63,6 +63,10 @@
       "title": "PIN-kod för förälder",
       "cancel": "C",
       "error": "Fel kod. Försök igen."
+    },
+    "choreEdit": {
+      "editChorePoints": "Redigera poäng",
+      "points": "Poäng"
     }
   },
   "common": {

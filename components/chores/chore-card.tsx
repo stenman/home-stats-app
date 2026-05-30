@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Zap, Check, RotateCcw, AlertCircle, Play, ShieldCheck } from "lucide-react";
+import { Zap, Check, RotateCcw, AlertCircle, Play, ShieldCheck, Pencil } from "lucide-react";
 
 export type ChoreStatus = "ready" | "started" | "finished" | "inspected";
 
@@ -21,17 +21,43 @@ type ChoreCardProps = {
   onAction: (choreId: string, action: string, assignee?: string) => void;
   onRequestInspect: (choreId: string) => void;
   lastDoneByUserId: string | null;
+  isEditingPoints: boolean;
+  onRequestEditPoints: () => void;
+  onSavePoints: (points: number) => boolean | Promise<boolean>;
+  onCancelEditPoints: () => void;
 };
 
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
 
-export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId }: ChoreCardProps) {
+export function ChoreCard({
+  chore,
+  onAction,
+  onRequestInspect,
+  lastDoneByUserId,
+  isEditingPoints,
+  onRequestEditPoints,
+  onSavePoints,
+  onCancelEditPoints,
+}: ChoreCardProps) {
   const t = useTranslations("chores");
   const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null);
+  const [pointsInput, setPointsInput] = useState<string>(String(chore.points));
   const lastDoneByUser = lastDoneByUserId
     ? FAMILY_MEMBERS.find((m) => String(m.id) === lastDoneByUserId)
     : null;
+
+  React.useEffect(() => {
+    if (isEditingPoints) {
+      setPointsInput(String(chore.points));
+    }
+  }, [isEditingPoints, chore.points]);
+
+  const pointsInputNumber = Number(pointsInput);
+  const pointsInputValid =
+    pointsInput.trim() !== "" &&
+    Number.isInteger(pointsInputNumber) &&
+    pointsInputNumber >= 0;
 
   // Status configuration
   const statusConfig = {
@@ -94,14 +120,26 @@ export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId 
                 {t(`tasks.${chore.titleKey}`)}
               </h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${config.accent}`}>
-                  <Zap className="size-3" />
-                  {chore.points}p
-                </span>
-                {chore.status !== "inspected" ? (
+                {!isEditingPoints ? (
+                  <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${config.accent}`}>
+                    <Zap className="size-3" />
+                    {chore.points}p
+                  </span>
+                ) : null}
+                {!isEditingPoints && chore.status !== "inspected" ? (
                   <span className="text-xs text-muted-foreground font-medium">
                     {config.indicator}
                   </span>
+                ) : null}
+                {!isEditingPoints ? (
+                  <button
+                    type="button"
+                    onClick={onRequestEditPoints}
+                    aria-label={t("choreEdit.editChorePoints")}
+                    className="inline-flex items-center justify-center rounded-md border bg-background/60 p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    <Pencil className="size-3" />
+                  </button>
                 ) : null}
               </div>
               {lastDoneByUser ? (
@@ -114,7 +152,7 @@ export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId 
         </div>
 
         {/* Middle Content: Assignee Avatar Selection or Assignee Display */}
-        <div className="my-6">
+        <div className="my-6" hidden={isEditingPoints}>
           {chore.status === "ready" ? (
             chore.assignee ? (
               <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
@@ -181,7 +219,56 @@ export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId 
         </div>
       </div>
 
-      {/* Bottom Footer: Dynamic Action Buttons */}
+      {isEditingPoints ? (
+        <div className="mt-4 pt-3 border-t border-border/10 space-y-3">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              {t("choreEdit.points")}
+            </label>
+            <input
+              type="number"
+              step="1"
+              min="0"
+              inputMode="numeric"
+              value={pointsInput}
+              onChange={(e) => setPointsInput(e.target.value)}
+              className="w-24 rounded border bg-background px-2 py-1 text-sm tabular-nums"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[-5, -1, 1, 5].map((step) => (
+              <Button
+                key={step}
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  const current = Number(pointsInput);
+                  const base = Number.isFinite(current) ? current : chore.points;
+                  const next = Math.max(0, base + step);
+                  setPointsInput(String(next));
+                }}
+              >
+                {step > 0 ? `+${step}` : `${step}`}
+              </Button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              disabled={!pointsInputValid || pointsInputNumber === chore.points}
+              onClick={async () => {
+                if (!pointsInputValid) return;
+                await onSavePoints(pointsInputNumber);
+              }}
+            >
+              {t("scoreboard.save")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={onCancelEditPoints}>
+              {t("scoreboard.cancel")}
+            </Button>
+          </div>
+        </div>
+      ) : (
       <div className="mt-4 pt-3 border-t border-border/10 flex items-center justify-end gap-2">
         {chore.status === "ready" && (
           <div className="flex w-full gap-2">
@@ -262,6 +349,7 @@ export function ChoreCard({ chore, onAction, onRequestInspect, lastDoneByUserId 
           </Button>
         )}
       </div>
+      )}
     </div>
   );
 }

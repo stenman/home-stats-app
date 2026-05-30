@@ -39,6 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+data/chores-data.json
 data/chores-points.json
 data/chores-state.json
 data/chores-users.json
