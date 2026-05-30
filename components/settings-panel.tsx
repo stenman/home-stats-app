@@ -26,7 +26,7 @@ export function SettingsPanel() {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() => {
     if (typeof window === "undefined") {
-      return "light";
+      return "dark";
     }
 
     const savedTheme = window.localStorage.getItem(
@@ -35,7 +35,7 @@ export function SettingsPanel() {
 
     return savedTheme === "dark" || savedTheme === "light"
       ? savedTheme
-      : "light";
+      : "dark";
   });
   const panelRef = useRef<HTMLDivElement>(null);
 
