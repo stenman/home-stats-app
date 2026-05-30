@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=pi
+User=<pi-username>
 WorkingDirectory=/srv/homestats
 ExecStart=/usr/bin/node server.js
 Environment=NODE_ENV=production

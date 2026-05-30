@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     const { action, choreId, assignee: assigneeName } = body;
     let assignee = assigneeName;
     if (assignee) {
-      const users = await readJson(path.join(DATA_DIR, "chores-users.json"));
+      const users = await readJson(path.join(DATA_DIR, "chores-users.json"), []);
       const user = users.find((u: any) => u.name === assignee);
       if (user) assignee = String(user.id);
     }

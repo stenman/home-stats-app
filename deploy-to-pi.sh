@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PI_HOST="${PI_HOST:-homestats.local}"
-PI_USER="${PI_USER:-pi}"
+PI_HOST="${PI_HOST:-homestats}"
+PI_USER="${PI_USER:-}"
 REMOTE_DIR="/srv/homestats"
+PI_TARGET="${PI_USER:+${PI_USER}@}${PI_HOST}"
 
 npm ci
 npm run build
@@ -21,9 +22,9 @@ cp -r public .deploy/public
 cp -r messages .deploy/messages
 
 # Ship to the Pi — preserve runtime data dir on the remote
-rsync -avz --delete --exclude='data/' .deploy/ "${PI_USER}@${PI_HOST}:${REMOTE_DIR}/"
+rsync -avz --delete --exclude='data/' .deploy/ "${PI_TARGET}:${REMOTE_DIR}/"
 # Push only the committed chore definitions (safe to overwrite)
-rsync -avz data/chores-data.json "${PI_USER}@${PI_HOST}:${REMOTE_DIR}/data/chores-data.json"
+rsync -avz data/chores-data.json "${PI_TARGET}:${REMOTE_DIR}/data/chores-data.json"
 
-ssh "${PI_USER}@${PI_HOST}" "sudo systemctl restart homestats"
+ssh "${PI_TARGET}" "sudo systemctl restart homestats"
 echo "Deployed. Open http://${PI_HOST}:3000/"

@@ -7,7 +7,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 <!-- System Environment -->
 # Environment: Windows 11
 # Shell: Git Bash (GNU bash 5.1.16)
-# Workspace: c:\Users\nederbird\projects\home-stats-app
 # Available tools: git, npm, python, node, code
 
 <!-- Command Execution Note -->
