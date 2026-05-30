@@ -45,7 +45,12 @@
       "title": "Points Leaderboard",
       "historyTitle": "Completion history",
       "historyEmpty": "No chores completed yet.",
-      "timesSuffix": "×"
+      "timesSuffix": "×",
+      "editPoints": "Edit points",
+      "currentTotal": "Current total",
+      "setTo": "Set to",
+      "save": "Save",
+      "cancel": "Cancel"
     },
     "tasks": {
       "heading": "Active Chores",

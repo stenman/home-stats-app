@@ -15,9 +15,12 @@ type HistoryEntry = {
   at: string;
 };
 
+const MANUAL_ADJUSTMENT_CHORE_ID = "manual-adjustment";
+
 function deriveCounts(history: HistoryEntry[]) {
   const counts: Record<string, Record<string, number>> = {};
   for (const entry of history) {
+    if (entry.choreId === MANUAL_ADJUSTMENT_CHORE_ID) continue;
     if (!counts[entry.userId]) counts[entry.userId] = {};
     counts[entry.userId][entry.choreId] = (counts[entry.userId][entry.choreId] || 0) + 1;
   }
@@ -27,6 +30,7 @@ function deriveCounts(history: HistoryEntry[]) {
 function deriveLastDoneBy(history: HistoryEntry[]) {
   const last: Record<string, { userId: string; at: string }> = {};
   for (const entry of history) {
+    if (entry.choreId === MANUAL_ADJUSTMENT_CHORE_ID) continue;
     const prev = last[entry.choreId];
     if (!prev || entry.at > prev.at) {
       last[entry.choreId] = { userId: entry.userId, at: entry.at };
@@ -88,6 +92,48 @@ export async function POST(request: Request) {
     const points = await readJson(POINTS_FILE, {});
     const history = (await readJson(HISTORY_FILE, [])) as HistoryEntry[];
     let historyChanged = false;
+
+    if (action === "adjust") {
+      const { userId, delta, setTo } = body;
+      if (typeof userId !== "string" || !userId) {
+        return NextResponse.json({ error: "userId is required" }, { status: 400 });
+      }
+      const hasDelta = typeof delta === "number";
+      const hasSetTo = typeof setTo === "number";
+      if (hasDelta === hasSetTo) {
+        return NextResponse.json({ error: "Provide exactly one of delta or setTo" }, { status: 400 });
+      }
+      const value = hasDelta ? delta : setTo;
+      if (!Number.isFinite(value) || !Number.isInteger(value)) {
+        return NextResponse.json({ error: "delta/setTo must be a finite integer" }, { status: 400 });
+      }
+      if (points[userId] === undefined) points[userId] = 0;
+      const currentPoints = points[userId];
+      const effectiveDelta = hasSetTo ? setTo - currentPoints : delta;
+
+      if (effectiveDelta !== 0) {
+        points[userId] = currentPoints + effectiveDelta;
+        history.push({
+          userId,
+          choreId: MANUAL_ADJUSTMENT_CHORE_ID,
+          points: effectiveDelta,
+          at: new Date().toISOString(),
+        });
+        await writeJson(POINTS_FILE, points);
+        await writeJson(HISTORY_FILE, history);
+      }
+
+      const chores = tasks.map((t: any) => {
+        const s = states[t.id] || { status: "ready", assignee: null };
+        return { ...t, status: s.status, assignee: s.assignee };
+      });
+      return NextResponse.json({
+        chores,
+        points,
+        counts: deriveCounts(history),
+        lastDoneBy: deriveLastDoneBy(history),
+      });
+    }
 
     const task = tasks.find((t: any) => t.id === choreId);
     if (!task) {

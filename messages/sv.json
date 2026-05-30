@@ -45,7 +45,12 @@
       "title": "Poängtavla",
       "historyTitle": "Genomförd historik",
       "historyEmpty": "Inga avklarade sysslor än.",
-      "timesSuffix": "ggr"
+      "timesSuffix": "ggr",
+      "editPoints": "Redigera poäng",
+      "currentTotal": "Nuvarande total",
+      "setTo": "Sätt till",
+      "save": "Spara",
+      "cancel": "Avbryt"
     },
     "tasks": {
       "heading": "Aktiva sysslor",

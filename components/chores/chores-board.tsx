@@ -6,7 +6,8 @@ import { Chore, ChoreCard } from "./chore-card";
 import { PinPad } from "./pin-pad";
 import { InspectCelebration } from "./inspect-celebration";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Trophy, Star, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Trophy, Star, Loader2, Pencil } from "lucide-react";
 
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
@@ -30,6 +31,9 @@ export function ChoresBoard() {
   const [inspectingChoreId, setInspectingChoreId] = useState<string | null>(null);
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const [celebration, setCelebration] = useState<Celebration | null>(null);
+  const [pendingEditUserId, setPendingEditUserId] = useState<string | null>(null);
+  const [editingPointsUserId, setEditingPointsUserId] = useState<string | null>(null);
+  const [setToInput, setSetToInput] = useState<string>("");
 
   // Fetch initial data
   const fetchData = async () => {
@@ -74,8 +78,51 @@ export function ChoresBoard() {
     }
   };
 
+  const handleAdjust = async (
+    userId: string,
+    payload: { delta?: number; setTo?: number }
+  ) => {
+    try {
+      const res = await fetch("/api/chores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "adjust", userId, ...payload }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setChores(data.chores || []);
+        setPoints(data.points || {});
+        if (data.counts) setCounts(data.counts);
+        if (data.lastDoneBy) setLastDoneBy(data.lastDoneBy);
+        return true;
+      }
+      alert(data.error || "Adjustment failed");
+      return false;
+    } catch (err) {
+      console.error("Error adjusting points:", err);
+      return false;
+    }
+  };
+
   const handleInspectRequest = (choreId: string) => {
     setInspectingChoreId(choreId);
+  };
+
+  const handlePinSuccess = async () => {
+    if (inspectingChoreId) {
+      await handleInspectSuccess();
+      return;
+    }
+    if (pendingEditUserId) {
+      setEditingPointsUserId(pendingEditUserId);
+      setSetToInput(String(points[pendingEditUserId] ?? 0));
+      setPendingEditUserId(null);
+    }
+  };
+
+  const closePinPad = () => {
+    setInspectingChoreId(null);
+    setPendingEditUserId(null);
   };
 
   const handleInspectSuccess = async () => {
@@ -131,7 +178,10 @@ export function ChoresBoard() {
       type="button"
       key={member.name}
       aria-expanded={isExpanded}
-      onClick={() => setExpandedUserId(isExpanded ? null : memberId)}
+      onClick={() => {
+        setExpandedUserId(isExpanded ? null : memberId);
+        setEditingPointsUserId(null);
+      }}
       className={`flex flex-col items-center justify-center p-4 rounded-xl border bg-card shadow-xs transition-all duration-200 hover:shadow-sm text-left touch-manipulation ${isExpanded ? "ring-2 ring-primary" : ""}`}
     >
       {hasAvatar ? (
@@ -160,10 +210,26 @@ export function ChoresBoard() {
                 .map((chore) => ({ chore, count: userCounts[chore.id] || 0 }))
                 .filter((row) => row.count > 0)
                 .sort((a, b) => b.count - a.count);
+              const isEditing = editingPointsUserId === expandedUserId;
+              const expandedUserPoints = points[expandedUserId] || 0;
+              const setToNumber = Number(setToInput);
+              const setToValid = setToInput.trim() !== "" && Number.isInteger(setToNumber);
               return (
                 <div className="mt-4 rounded-xl border bg-muted/30 p-4">
-                  <div className="mb-3 text-sm font-semibold">
-                    {expandedMember.name} — {t("scoreboard.historyTitle")}
+                  <div className="mb-3 flex items-center justify-between gap-2">
+                    <div className="text-sm font-semibold">
+                      {expandedMember.name} — {t("scoreboard.historyTitle")}
+                    </div>
+                    {!isEditing ? (
+                      <button
+                        type="button"
+                        onClick={() => setPendingEditUserId(expandedUserId)}
+                        className="inline-flex items-center gap-1 rounded-md border bg-background px-2 py-1 text-xs font-medium hover:bg-muted"
+                      >
+                        <Pencil className="size-3" />
+                        {t("scoreboard.editPoints")}
+                      </button>
+                    ) : null}
                   </div>
                   {rows.length === 0 ? (
                     <div className="text-sm text-muted-foreground">
@@ -187,6 +253,65 @@ export function ChoresBoard() {
                       ))}
                     </ul>
                   )}
+                  {isEditing ? (
+                    <div className="mt-4 space-y-3 rounded-lg border bg-background p-3">
+                      <div className="text-xs text-muted-foreground">
+                        {t("scoreboard.currentTotal")}:{" "}
+                        <span className="font-bold tabular-nums text-foreground">
+                          {expandedUserPoints}p
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs text-muted-foreground">
+                          {t("scoreboard.setTo")}
+                        </label>
+                        <input
+                          type="number"
+                          step="1"
+                          inputMode="numeric"
+                          value={setToInput}
+                          onChange={(e) => setSetToInput(e.target.value)}
+                          className="w-24 rounded border bg-background px-2 py-1 text-sm tabular-nums"
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {[-5, -1, 1, 5].map((step) => (
+                          <Button
+                            key={step}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const current = Number(setToInput);
+                              const base = Number.isFinite(current) ? current : expandedUserPoints;
+                              setSetToInput(String(base + step));
+                            }}
+                          >
+                            {step > 0 ? `+${step}` : `${step}`}
+                          </Button>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2 pt-1">
+                        <Button
+                          size="sm"
+                          disabled={!setToValid || setToNumber === expandedUserPoints}
+                          onClick={async () => {
+                            if (!setToValid) return;
+                            const ok = await handleAdjust(expandedUserId, { setTo: setToNumber });
+                            if (ok) setEditingPointsUserId(null);
+                          }}
+                        >
+                          {t("scoreboard.save")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingPointsUserId(null)}
+                        >
+                          {t("scoreboard.cancel")}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               );
             })() : null}
@@ -216,9 +341,9 @@ export function ChoresBoard() {
 
       {/* Parent PIN Overlay */}
       <PinPad
-        isOpen={inspectingChoreId !== null}
-        onClose={() => setInspectingChoreId(null)}
-        onSuccess={handleInspectSuccess}
+        isOpen={inspectingChoreId !== null || pendingEditUserId !== null}
+        onClose={closePinPad}
+        onSuccess={handlePinSuccess}
         title={t("pinPad.title")}
         cancelLabel={t("pinPad.cancel")}
         errorLabel={t("pinPad.error")}
