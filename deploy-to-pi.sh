@@ -27,4 +27,4 @@ rsync -avz --delete --exclude='data/' .deploy/ "${PI_TARGET}:${REMOTE_DIR}/"
 rsync -avz data/chores-data.json "${PI_TARGET}:${REMOTE_DIR}/data/chores-data.json"
 
 ssh "${PI_TARGET}" "sudo systemctl restart homestats"
-echo "Deployed. Open http://${PI_HOST}:3000/"
+echo "Deployed. Open http://${PI_HOST}/"

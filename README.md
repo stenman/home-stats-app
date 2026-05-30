@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# home-stats-app
 
-## Getting Started
+A small Next.js dashboard for the home, run on a LAN as an always-on server.
+Two sections:
 
-First, run the development server:
+- **Family Chores** — a board where family members start, finish, and get
+  chores inspected to earn points (with a scoreboard).
+- **Household Electricity** — electricity usage stats.
+
+Bilingual (English / Swedish) via `next-intl`.
+
+## Setup
+
+State lives as JSON under `data/`. The two files you edit to make it yours:
+
+- **`data/chores-data.json`** — the chore definitions (id, icon, `titleKey`,
+  points). Each `titleKey` must have a matching translation in
+  [messages/en.json](messages/en.json) and [messages/sv.json](messages/sv.json).
+- **`data/chores-users.json`** — the family members (`id`, `name`, `emoji`).
+  Copy `data/chores-users.json.default` to `data/chores-users.json` and edit.
+  Required — the chores API needs it before any chore can be started.
+
+The remaining `data/chores-*.json` files (state, points, history) are runtime
+data and are created/updated automatically.
+
+## Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Built on the dev machine and shipped as a standalone bundle to a Raspberry Pi
+over SSH/rsync, served by systemd on port 80 (reachable at
+`http://homestats.local`):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+./deploy-to-pi.sh
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Full Pi provisioning, systemd unit, and first-run bootstrap are documented in
+[docs/deploy-pi.md](docs/deploy-pi.md).

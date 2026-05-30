@@ -252,6 +252,13 @@ restart on crash.
 `<pi-username>` for a real user, systemd will fail with "Failed to determine
 user credentials" and loop on restart.
 
+`PORT=80` serves the app on the default HTTP port so it's reached at the bare
+`http://homestats.local` (no `:3000`). Port 80 is privileged, and the service
+runs as a non-root user, so `AmbientCapabilities=CAP_NET_BIND_SERVICE` grants
+just the Node process the one capability it needs to bind a low port — no
+reverse proxy, no running as root. Without it the unit fails with
+`listen EACCES: permission denied 0.0.0.0:80`.
+
 ### Passwordless sudo for the restart step
 
 `deploy-to-pi.sh` ends with `ssh "$PI_TARGET" "sudo systemctl restart homestats"`.
@@ -308,8 +315,8 @@ If you want to migrate existing chore history too, scp those JSON files into
 ## Step 7 — Verification
 
 1. `sudo systemctl status homestats` → active (running).
-2. From Windows: `curl http://homestats.local:3000/sv/chores` → 200 with HTML.
-3. From a phone on the LAN: open `http://homestats.local:3000` → chores board
+2. From Windows: `curl http://homestats.local/sv/chores` → 200 with HTML.
+3. From a phone on the LAN: open `http://homestats.local` → chores board
    loads, scoreboard tiles render.
 4. Take a chore through `start → finish → inspect` → confirm
    `/srv/homestats/data/chores-history.json` gains an entry.
@@ -322,9 +329,9 @@ If you want to migrate existing chore history too, scp those JSON files into
 
 - **Backups.** A weekly `rsync` of `/srv/homestats/data/` to the Windows machine
   or a USB drive would be smart.
-- **Reverse proxy / port 80.** This setup currently exposes port 3000. If we
-  want pretty URLs, drop nginx or caddy in front later.
-- **HTTPS.** Not needed on LAN. If the app ever leaves the LAN, add it then.
+- **HTTPS.** Not needed on LAN. If the app ever leaves the LAN, add it then. A
+  reverse proxy (nginx/caddy) would be the place to terminate it; for now Node
+  serves port 80 directly via `CAP_NET_BIND_SERVICE` (Step 5).
 
 ## Decisions to make before you start
 
