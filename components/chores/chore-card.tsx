@@ -206,7 +206,7 @@ export function ChoreCard({
             <div className="flex items-center gap-3 rounded-xl border bg-background/50 p-3 shadow-xs">
               <div>
                 <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  {t("labels.assignedTo")}
+                  {t(chore.status === "finished" ? "labels.completedBy" : "labels.assignedTo")}
                 </div>
 {currentAssigneeImage ? (
   <img src={currentAssigneeImage} alt={currentAssigneeName} className="w-8 h-8 rounded-full" />

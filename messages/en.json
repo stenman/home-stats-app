@@ -27,6 +27,7 @@
     "labels": {
       "selectAssignee": "Who is doing this?",
       "assignedTo": "Assigned to",
+      "completedBy": "Done by",
       "lastDoneBy": "Last done by"
     },
     "buttons": {

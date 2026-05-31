@@ -27,6 +27,7 @@
     "labels": {
       "selectAssignee": "Vem ska göra detta?",
       "assignedTo": "Utförs av",
+      "completedBy": "Utförd av",
       "lastDoneBy": "Senast utförd av"
     },
     "buttons": {

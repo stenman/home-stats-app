@@ -12,6 +12,14 @@ import { Trophy, Star, Loader2, Pencil } from "lucide-react";
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
 
+// Card display order: finished (awaiting inspection) → started → ready → inspected
+const STATUS_ORDER: Record<Chore["status"], number> = {
+  finished: 0,
+  started: 1,
+  ready: 2,
+  inspected: 3,
+};
+
 type CountsByUser = Record<string, Record<string, number>>;
 type LastDoneByMap = Record<string, { userId: string; at: string }>;
 type Celebration = {
@@ -185,6 +193,10 @@ export function ChoresBoard() {
     );
   }
 
+  const sortedChores = [...chores].sort(
+    (a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]
+  );
+
   return (
     <div className="space-y-8">
       {/* Scoreboard / Leaderboard */}
@@ -352,13 +364,8 @@ export function ChoresBoard() {
 
       {/* Task List Grid */}
       <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-medium text-muted-foreground">
-            {t("tasks.heading")}
-          </h2>
-        </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {chores.map((chore) => (
+          {sortedChores.map((chore) => (
             <ChoreCard
               key={chore.id}
               chore={chore}
