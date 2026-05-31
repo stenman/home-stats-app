@@ -57,7 +57,10 @@
       "takeOutGarbage": "Take out the garbage",
       "fillDishwasher": "Fill the dishwasher",
       "emptyDishwasher": "Empty the dishwasher",
-      "vacuumUpstairs": "Vacuum the upstairs"
+      "vacuumUpstairs": "Vacuum the upstairs",
+      "cleanBathroomSinkMirror": "Clean the bathroom sink and mirror",
+      "dustUpstairs": "Dust the upstairs",
+      "wipeKitchenSurfaces": "Wipe the counters, stove and dining table"
     },
     "pinPad": {
       "title": "Parent Verification PIN",

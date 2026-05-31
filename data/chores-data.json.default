@@ -2,5 +2,8 @@
   { "id": "take-out-garbage", "icon": "🗑️", "titleKey": "takeOutGarbage", "points": 10 },
   { "id": "fill-dishwasher", "icon": "🍽️", "titleKey": "fillDishwasher", "points": 7 },
   { "id": "empty-dishwasher", "icon": "✨", "titleKey": "emptyDishwasher", "points": 5 },
-  { "id": "vacuum-upstairs", "icon": "🧹", "titleKey": "vacuumUpstairs", "points": 10 }
+  { "id": "vacuum-upstairs", "icon": "🧹", "titleKey": "vacuumUpstairs", "points": 10 },
+  { "id": "clean-bathroom-sink-mirror", "icon": "🪞", "titleKey": "cleanBathroomSinkMirror", "points": 8 },
+  { "id": "dust-upstairs", "icon": "🪶", "titleKey": "dustUpstairs", "points": 8 },
+  { "id": "wipe-kitchen-surfaces", "icon": "🧽", "titleKey": "wipeKitchenSurfaces", "points": 8 }
 ]

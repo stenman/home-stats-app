@@ -57,7 +57,10 @@
       "takeOutGarbage": "Ta ut soporna",
       "fillDishwasher": "Fyll diskmaskinen",
       "emptyDishwasher": "Töm diskmaskinen",
-      "vacuumUpstairs": "Dammsug övervåningen"
+      "vacuumUpstairs": "Dammsug övervåningen",
+      "cleanBathroomSinkMirror": "Rengör handfat och spegel i badrum",
+      "dustUpstairs": "Damma övervåningen",
+      "wipeKitchenSurfaces": "Torka av diskbänk, köksbänkar, spis och matsalsbord"
     },
     "pinPad": {
       "title": "PIN-kod för förälder",
