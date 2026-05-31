@@ -13,8 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Home Stats App",
-  description: "Household statistics dashboard",
+  title: "Hemstatistik",
+  description: "Översikt av ditt hushållsdata",
+  applicationName: "Hemstatistik",
+  appleWebApp: {
+    capable: true,
+    title: "Hemstatistik",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+export const viewport = {
+  themeColor: "#0c0a09",
 };
 
 export default function RootLayout({
