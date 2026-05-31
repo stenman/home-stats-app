@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Chore, ChoreCard } from "./chore-card";
 import { PinPad } from "./pin-pad";
@@ -11,6 +11,9 @@ import { Trophy, Star, Loader2, Pencil } from "lucide-react";
 
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
+
+// How often each device re-pulls chore state to pick up other devices' changes.
+const POLL_INTERVAL_MS = 4000;
 
 // Card display order: finished (awaiting inspection) → started → ready → inspected
 const STATUS_ORDER: Record<Chore["status"], number> = {
@@ -63,6 +66,37 @@ export function ChoresBoard() {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  // Poll for changes made on other devices. A tick is skipped while the user is
+  // mid-interaction so a refetch never clobbers an open edit panel / overlay.
+  const busy =
+    editingPointsChoreId !== null ||
+    editingPointsUserId !== null ||
+    pendingEditChoreId !== null ||
+    pendingEditUserId !== null ||
+    inspectingChoreId !== null ||
+    celebration !== null;
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
+  const fetchDataRef = useRef(fetchData);
+  fetchDataRef.current = fetchData;
+
+  useEffect(() => {
+    const maybeFetch = () => {
+      if (document.hidden || busyRef.current) return;
+      fetchDataRef.current();
+    };
+    const id = setInterval(maybeFetch, POLL_INTERVAL_MS);
+    // Refresh immediately when returning to a backgrounded tab/device.
+    const onVisibility = () => {
+      if (!document.hidden) maybeFetch();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const handleAction = async (choreId: string, action: string, assignee?: string) => {
