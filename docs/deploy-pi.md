@@ -331,10 +331,49 @@ once before starting the service.
 6. Optional sanity: `sudo journalctl -u homestats -f` while doing a chore →
    no errors.
 
+## Step 8 — Daily JSON backup (local rolling 30-day)
+
+The Pi's `/srv/homestats/data/` holds runtime state that lives nowhere else
+(deploy intentionally doesn't push it). The repo ships
+[`scripts/homestats-backup.sh`](../scripts/homestats-backup.sh) which zips
+every `chores-*.json` runtime file into `~/homestats-backups/` once a day and
+keeps the last 30 archives.
+
+**One-time install (from WSL):**
+
+```bash
+scp scripts/homestats-backup.sh homestats:~/homestats-backup.sh
+ssh homestats "chmod +x ~/homestats-backup.sh && sudo apt install -y zip"
+```
+
+**Schedule via user crontab on the Pi** — `ssh homestats`, then `crontab -e`,
+add (substituting your username):
+
+```
+7 3 * * * /home/<pi-username>/homestats-backup.sh >> /home/<pi-username>/homestats-backups/backup.log 2>&1
+```
+
+03:07 daily avoids the midnight cron rush. Confirm with `crontab -l`.
+
+**Manual run** any time: `~/homestats-backup.sh` — overwrites today's archive
+if present, otherwise creates a fresh one.
+
+**Restore one day** if needed:
+
+```bash
+unzip -j ~/homestats-backups/homestats-data-YYYY-MM-DD.zip -d /srv/homestats/data/
+sudo systemctl restart homestats
+```
+
+`unzip -j` flattens the archive so files land directly in `data/`. Restart
+picks up the restored state on the next request.
+
 ## Deferred (out of scope for v1)
 
-- **Backups.** A weekly `rsync` of `/srv/homestats/data/` to the Windows machine
-  or a USB drive would be smart.
+- **Off-site backup copy.** The daily Pi-local archive (Step 8) protects
+  against `rm` mistakes; it does NOT survive SD card failure. Adding a
+  weekly rsync to the Windows machine, a USB drive, or a cloud bucket would
+  be the next step.
 - **HTTPS.** Not needed on LAN. If the app ever leaves the LAN, add it then. A
   reverse proxy (nginx/caddy) would be the place to terminate it; for now Node
   serves port 80 directly via `CAP_NET_BIND_SERVICE` (Step 5).
