@@ -27,6 +27,34 @@ function deriveCounts(history: HistoryEntry[]) {
   return counts;
 }
 
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function uniqueId(base: string, existing: Set<string>): string {
+  if (!existing.has(base)) return base;
+  let n = 1;
+  while (existing.has(`${base}-${n}`)) n++;
+  return `${base}-${n}`;
+}
+
+function isValidChoreFields(body: any): { title: string; icon: string; points: number } | { error: string } {
+  const title = typeof body.title === "string" ? body.title.trim() : "";
+  const icon = typeof body.icon === "string" ? body.icon.trim() : "";
+  const points = body.points;
+  if (!title) return { error: "title is required" };
+  if (!icon) return { error: "icon is required" };
+  if (!Number.isFinite(points) || !Number.isInteger(points) || points < 0) {
+    return { error: "points must be a non-negative integer" };
+  }
+  return { title, icon, points };
+}
+
 function deriveLastDoneBy(history: HistoryEntry[]) {
   const last: Record<string, { userId: string; at: string }> = {};
   for (const entry of history) {
@@ -93,32 +121,66 @@ export async function POST(request: Request) {
     const history = (await readJson(HISTORY_FILE, [])) as HistoryEntry[];
     let historyChanged = false;
 
-    if (action === "set-chore-points") {
-      const { points: newPoints } = body;
+    if (action === "add-chore" || action === "update-chore" || action === "delete-chore") {
+      const buildResponse = () => {
+        const chores = tasks.map((t: any) => {
+          const s = states[t.id] || { status: "ready", assignee: null };
+          return { ...t, status: s.status, assignee: s.assignee };
+        });
+        return NextResponse.json({
+          chores,
+          points,
+          counts: deriveCounts(history),
+          lastDoneBy: deriveLastDoneBy(history),
+        });
+      };
+
+      if (action === "add-chore") {
+        const fields = isValidChoreFields(body);
+        if ("error" in fields) {
+          return NextResponse.json({ error: fields.error }, { status: 400 });
+        }
+        const existing = new Set<string>(tasks.map((t: any) => t.id));
+        const base = slugify(fields.title) || "chore";
+        const id = uniqueId(base, existing);
+        tasks.push({ id, icon: fields.icon, title: fields.title, points: fields.points });
+        await writeJson(DATA_FILE, tasks);
+        return buildResponse();
+      }
+
+      if (action === "update-chore") {
+        if (typeof choreId !== "string" || !choreId) {
+          return NextResponse.json({ error: "choreId is required" }, { status: 400 });
+        }
+        const idx = tasks.findIndex((t: any) => t.id === choreId);
+        if (idx === -1) {
+          return NextResponse.json({ error: "Task not found" }, { status: 404 });
+        }
+        const fields = isValidChoreFields(body);
+        if ("error" in fields) {
+          return NextResponse.json({ error: fields.error }, { status: 400 });
+        }
+        const { titleKey: _drop, ...rest } = tasks[idx];
+        tasks[idx] = { ...rest, icon: fields.icon, title: fields.title, points: fields.points };
+        await writeJson(DATA_FILE, tasks);
+        return buildResponse();
+      }
+
+      // delete-chore
       if (typeof choreId !== "string" || !choreId) {
         return NextResponse.json({ error: "choreId is required" }, { status: 400 });
-      }
-      if (!Number.isFinite(newPoints) || !Number.isInteger(newPoints) || newPoints < 0) {
-        return NextResponse.json({ error: "points must be a non-negative integer" }, { status: 400 });
       }
       const idx = tasks.findIndex((t: any) => t.id === choreId);
       if (idx === -1) {
         return NextResponse.json({ error: "Task not found" }, { status: 404 });
       }
-      if (tasks[idx].points !== newPoints) {
-        tasks[idx].points = newPoints;
-        await writeJson(DATA_FILE, tasks);
+      tasks.splice(idx, 1);
+      await writeJson(DATA_FILE, tasks);
+      if (states[choreId]) {
+        delete states[choreId];
+        await writeJson(STATE_FILE, states);
       }
-      const chores = tasks.map((t: any) => {
-        const s = states[t.id] || { status: "ready", assignee: null };
-        return { ...t, status: s.status, assignee: s.assignee };
-      });
-      return NextResponse.json({
-        chores,
-        points,
-        counts: deriveCounts(history),
-        lastDoneBy: deriveLastDoneBy(history),
-      });
+      return buildResponse();
     }
 
     if (action === "adjust") {

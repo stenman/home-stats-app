@@ -69,8 +69,14 @@
       "error": "Fel kod. Försök igen."
     },
     "choreEdit": {
-      "editChorePoints": "Redigera poäng",
-      "points": "Poäng"
+      "addChore": "Lägg till syssla",
+      "editChore": "Redigera syssla",
+      "title": "Titel",
+      "icon": "Ikon",
+      "points": "Poäng",
+      "delete": "Ta bort",
+      "confirmDelete": "Är du säker?",
+      "confirmDeleteAction": "Bekräfta borttagning"
     }
   },
   "common": {

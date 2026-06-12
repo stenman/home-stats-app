@@ -69,8 +69,14 @@
       "error": "Incorrect code. Please try again."
     },
     "choreEdit": {
-      "editChorePoints": "Edit points",
-      "points": "Points"
+      "addChore": "Add chore",
+      "editChore": "Edit chore",
+      "title": "Title",
+      "icon": "Icon",
+      "points": "Points",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure?",
+      "confirmDeleteAction": "Confirm delete"
     }
   },
   "common": {

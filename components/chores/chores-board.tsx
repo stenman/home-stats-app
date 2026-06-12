@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl";
 import { Chore, ChoreCard } from "./chore-card";
 import { PinPad } from "./pin-pad";
 import { InspectCelebration } from "./inspect-celebration";
+import { ChoreEditDialog } from "./chore-edit-dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Star, Loader2, Pencil } from "lucide-react";
+import { Trophy, Star, Loader2, Pencil, Plus } from "lucide-react";
 
 import users from "../../data/chores-users.json";
 const FAMILY_MEMBERS = users;
@@ -46,7 +47,12 @@ export function ChoresBoard() {
   const [editingPointsUserId, setEditingPointsUserId] = useState<string | null>(null);
   const [setToInput, setSetToInput] = useState<string>("");
   const [pendingEditChoreId, setPendingEditChoreId] = useState<string | null>(null);
-  const [editingPointsChoreId, setEditingPointsChoreId] = useState<string | null>(null);
+  const [pendingAddChore, setPendingAddChore] = useState<boolean>(false);
+  const [chorePadDialog, setChorePadDialog] = useState<
+    | { mode: "add" }
+    | { mode: "edit"; choreId: string }
+    | null
+  >(null);
 
   // Fetch initial data
   const fetchData = async () => {
@@ -71,10 +77,11 @@ export function ChoresBoard() {
   // Poll for changes made on other devices. A tick is skipped while the user is
   // mid-interaction so a refetch never clobbers an open edit panel / overlay.
   const busy =
-    editingPointsChoreId !== null ||
+    chorePadDialog !== null ||
     editingPointsUserId !== null ||
     pendingEditChoreId !== null ||
     pendingEditUserId !== null ||
+    pendingAddChore ||
     inspectingChoreId !== null ||
     celebration !== null;
   const busyRef = useRef(busy);
@@ -164,8 +171,13 @@ export function ChoresBoard() {
       return;
     }
     if (pendingEditChoreId) {
-      setEditingPointsChoreId(pendingEditChoreId);
+      setChorePadDialog({ mode: "edit", choreId: pendingEditChoreId });
       setPendingEditChoreId(null);
+      return;
+    }
+    if (pendingAddChore) {
+      setChorePadDialog({ mode: "add" });
+      setPendingAddChore(false);
     }
   };
 
@@ -173,14 +185,15 @@ export function ChoresBoard() {
     setInspectingChoreId(null);
     setPendingEditUserId(null);
     setPendingEditChoreId(null);
+    setPendingAddChore(false);
   };
 
-  const handleSetChorePoints = async (choreId: string, newPoints: number) => {
+  const postChoreAction = async (body: Record<string, unknown>, errorLabel: string) => {
     try {
       const res = await fetch("/api/chores", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "set-chore-points", choreId, points: newPoints }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (res.ok) {
@@ -190,13 +203,24 @@ export function ChoresBoard() {
         if (data.lastDoneBy) setLastDoneBy(data.lastDoneBy);
         return true;
       }
-      alert(data.error || "Update failed");
+      alert(data.error || errorLabel);
       return false;
     } catch (err) {
-      console.error("Error updating chore points:", err);
+      console.error(errorLabel, err);
       return false;
     }
   };
+
+  const handleAddChore = (payload: { title: string; icon: string; points: number }) =>
+    postChoreAction({ action: "add-chore", ...payload }, "Add chore failed");
+
+  const handleUpdateChore = (
+    choreId: string,
+    payload: { title: string; icon: string; points: number }
+  ) => postChoreAction({ action: "update-chore", choreId, ...payload }, "Update chore failed");
+
+  const handleDeleteChore = (choreId: string) =>
+    postChoreAction({ action: "delete-chore", choreId }, "Delete chore failed");
 
   const handleInspectSuccess = async () => {
     if (!inspectingChoreId) return;
@@ -321,7 +345,7 @@ export function ChoresBoard() {
                         >
                           <span className="flex items-center gap-2 text-sm">
                             <span className="text-xl select-none">{chore.icon}</span>
-                            {t(`tasks.${chore.titleKey}`)}
+                            {chore.title ?? (chore.titleKey ? t(`tasks.${chore.titleKey}`) : chore.id)}
                           </span>
                           <span className="text-sm font-bold tabular-nums">
                             {count} {t("scoreboard.timesSuffix")}
@@ -398,6 +422,17 @@ export function ChoresBoard() {
 
       {/* Task List Grid */}
       <section>
+        <div className="mb-4 flex justify-end">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => setPendingAddChore(true)}
+          >
+            <Plus className="size-4 mr-1" />
+            {t("choreEdit.addChore")}
+          </Button>
+        </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {sortedChores.map((chore) => (
             <ChoreCard
@@ -406,14 +441,7 @@ export function ChoresBoard() {
               onAction={handleAction}
               onRequestInspect={handleInspectRequest}
               lastDoneByUserId={lastDoneBy[chore.id]?.userId ?? null}
-              isEditingPoints={editingPointsChoreId === chore.id}
-              onRequestEditPoints={() => setPendingEditChoreId(chore.id)}
-              onSavePoints={async (newPoints) => {
-                const ok = await handleSetChorePoints(chore.id, newPoints);
-                if (ok) setEditingPointsChoreId(null);
-                return ok;
-              }}
-              onCancelEditPoints={() => setEditingPointsChoreId(null)}
+              onRequestEdit={() => setPendingEditChoreId(chore.id)}
             />
           ))}
         </div>
@@ -424,7 +452,8 @@ export function ChoresBoard() {
         isOpen={
           inspectingChoreId !== null ||
           pendingEditUserId !== null ||
-          pendingEditChoreId !== null
+          pendingEditChoreId !== null ||
+          pendingAddChore
         }
         onClose={closePinPad}
         onSuccess={handlePinSuccess}
@@ -432,6 +461,52 @@ export function ChoresBoard() {
         cancelLabel={t("pinPad.cancel")}
         errorLabel={t("pinPad.error")}
       />
+
+      {(() => {
+        if (!chorePadDialog) {
+          return (
+            <ChoreEditDialog
+              open={false}
+              mode="add"
+              onSave={async () => false}
+              onClose={() => {}}
+            />
+          );
+        }
+        if (chorePadDialog.mode === "add") {
+          return (
+            <ChoreEditDialog
+              open={true}
+              mode="add"
+              onSave={(payload) => handleAddChore(payload)}
+              onClose={() => setChorePadDialog(null)}
+            />
+          );
+        }
+        const target = chores.find((c) => c.id === chorePadDialog.choreId);
+        if (!target) {
+          // Chore disappeared (e.g. another device deleted it). Close gracefully.
+          setChorePadDialog(null);
+          return null;
+        }
+        const titleText =
+          target.title ?? (target.titleKey ? t(`tasks.${target.titleKey}`) : target.id);
+        return (
+          <ChoreEditDialog
+            open={true}
+            mode="edit"
+            initial={{
+              id: target.id,
+              title: titleText,
+              icon: target.icon,
+              points: target.points,
+            }}
+            onSave={(payload) => handleUpdateChore(target.id, payload)}
+            onDelete={() => handleDeleteChore(target.id)}
+            onClose={() => setChorePadDialog(null)}
+          />
+        );
+      })()}
 
       <InspectCelebration
         open={celebration !== null}
