@@ -20,6 +20,7 @@ mkdir -p .deploy/.next
 cp -r .next/static .deploy/.next/static
 cp -r public .deploy/public
 cp -r messages .deploy/messages
+cp -r scripts .deploy/scripts
 
 # Ship to the Pi — preserve runtime data dir on the remote (chores-data.json
 # is now runtime state on the Pi, edited via the in-app editor, so we leave it

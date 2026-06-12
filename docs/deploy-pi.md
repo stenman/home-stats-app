@@ -339,24 +339,32 @@ The Pi's `/srv/homestats/data/` holds runtime state that lives nowhere else
 every `chores-*.json` runtime file into `~/homestats-backups/` once a day and
 keeps the last 30 archives.
 
-**One-time install (from WSL):**
+The script is bundled into the deploy and lands at
+`/srv/homestats/scripts/homestats-backup.sh` automatically every time you
+run `./deploy-to-pi.sh` — no manual scp needed.
+
+**One-time prerequisite (from WSL):** install `zip` on the Pi.
 
 ```bash
-scp scripts/homestats-backup.sh homestats:~/homestats-backup.sh
-ssh homestats "chmod +x ~/homestats-backup.sh && sudo apt install -y zip"
+ssh homestats "sudo apt install -y zip"
 ```
 
 **Schedule via user crontab on the Pi** — `ssh homestats`, then `crontab -e`,
-add (substituting your username):
+add (substituting your username for the log path):
 
 ```
-7 3 * * * /home/<pi-username>/homestats-backup.sh >> /home/<pi-username>/homestats-backups/backup.log 2>&1
+7 3 * * * /srv/homestats/scripts/homestats-backup.sh >> /home/<pi-username>/homestats-backups/backup.log 2>&1
 ```
 
 03:07 daily avoids the midnight cron rush. Confirm with `crontab -l`.
 
-**Manual run** any time: `~/homestats-backup.sh` — overwrites today's archive
-if present, otherwise creates a fresh one.
+> **Migrating from an earlier setup?** If your crontab already points at
+> `~/homestats-backup.sh`, edit it (`crontab -e`) to use the new
+> `/srv/homestats/scripts/` path, and optionally `rm ~/homestats-backup.sh`
+> to clear the orphaned copy.
+
+**Manual run** any time: `/srv/homestats/scripts/homestats-backup.sh` —
+overwrites today's archive if present, otherwise creates a fresh one.
 
 **Restore one day** if needed:
 
