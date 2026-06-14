@@ -84,7 +84,15 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
             <ChevronRight className="size-4" />
           </span>
         )}
-        <ImportButton />
+        <div className="ml-auto flex items-center gap-3">
+          <Link
+            href="/electricity/yearly"
+            className="rounded border px-2 py-1 text-sm hover:bg-muted"
+          >
+            {t("yearly.link")}
+          </Link>
+          <ImportButton />
+        </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

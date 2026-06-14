@@ -113,3 +113,52 @@ export async function getElectricityDashboardData(
       : null,
   };
 }
+
+export type YearlyElectricityPoint = {
+  year: number;
+  monthsCount: number;
+  totalAnnualCostSek: number; // Årskostnad totalt
+  totalAnnualSettledKwh: number; // Årsförbrukning total
+  annualElectricitySupplierSek: number; // Årskostnad elavgifter
+  annualGridFeesSek: number; // Årskostnad nätavgifter
+  avgEnergyFeeOrePerKwh: number; // Medelvärde öre/kWh (elavgifter)
+  avgTotalPriceOrePerKwh: number; // Medelvärde öre/kWh (total)
+  avgElectricitySupplierSek: number; // Medelvärde elavgifter
+  avgGridFeesSek: number; // Medelvärde nätavgifter
+  avgTotalCostSek: number; // Medelvärde total kostnad
+};
+
+export async function getElectricityYearlyData(): Promise<YearlyElectricityPoint[]> {
+  const rows = await readStoredRows();
+  if (rows.length === 0) return [];
+
+  const byYear = new Map<number, StoredElectricityRow[]>();
+  for (const row of rows) {
+    const year = Number(row.dateFrom.slice(0, 4));
+    const group = byYear.get(year);
+    if (group) group.push(row);
+    else byYear.set(year, [row]);
+  }
+
+  const sum = (group: StoredElectricityRow[], pick: (r: StoredElectricityRow) => number) =>
+    group.reduce((acc, r) => acc + pick(r), 0);
+
+  return Array.from(byYear.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([year, group]) => {
+      const months = group.length;
+      return {
+        year,
+        monthsCount: months,
+        totalAnnualCostSek: sum(group, (r) => r.totalCostSek),
+        totalAnnualSettledKwh: sum(group, (r) => r.settledKwh),
+        annualElectricitySupplierSek: sum(group, (r) => r.electricitySupplierSek),
+        annualGridFeesSek: sum(group, (r) => r.gridFeesSek),
+        avgEnergyFeeOrePerKwh: sum(group, (r) => r.energyFeeInclVatOrePerKwh) / months,
+        avgTotalPriceOrePerKwh: sum(group, (r) => r.totalPriceInclVatOrePerKwh) / months,
+        avgElectricitySupplierSek: sum(group, (r) => r.electricitySupplierSek) / months,
+        avgGridFeesSek: sum(group, (r) => r.gridFeesSek) / months,
+        avgTotalCostSek: sum(group, (r) => r.totalCostSek) / months,
+      };
+    });
+}

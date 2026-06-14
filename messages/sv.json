@@ -149,6 +149,23 @@
       "close": "Stäng",
       "cancel": "Avbryt",
       "emptyState": "Ingen eldata ännu. Importera en TSV-fil för att komma igång."
+    },
+    "yearly": {
+      "headerTitle": "Alla år",
+      "link": "Alla år",
+      "emptyState": "Ingen eldata ännu. Importera en TSV-fil på elsidan först.",
+      "partialNote": "* {year}: ofullständigt år ({months} månader med data)",
+      "charts": {
+        "annualTotalCost": "Årskostnad totalt",
+        "annualConsumption": "Årsförbrukning total",
+        "annualEnergyCost": "Årskostnad elavgifter",
+        "annualGridCost": "Årskostnad nätavgifter",
+        "avgEnergyOrePerKwh": "Medelvärde öre/kWh (elavgifter)",
+        "avgTotalOrePerKwh": "Medelvärde öre/kWh (total)",
+        "avgEnergyPerMonth": "Medelvärde elavgifter",
+        "avgGridPerMonth": "Medelvärde nätavgifter",
+        "avgTotalPerMonth": "Medelvärde total kostnad"
+      }
     }
   }
 }

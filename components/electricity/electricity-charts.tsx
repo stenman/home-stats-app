@@ -97,11 +97,6 @@ export function ElectricityCharts({
   const formatValue = (value: number) =>
     value.toLocaleString("sv-SE", { maximumFractionDigits: 1 });
 
-  const tooltipFormatter = (value: unknown, name: unknown) => [
-    formatValue(Number(value ?? 0)),
-    String(name ?? ""),
-  ] as [string, string];
-
   const labelWithComment = (
     label: string,
     payload?: ReadonlyArray<{ payload?: MonthlyElectricityPoint }>
@@ -109,6 +104,22 @@ export function ElectricityCharts({
     const point = payload?.[0]?.payload;
     return point?.comment ? `${label} - ${commentsLabel}: ${point.comment}` : label;
   };
+
+  // Colors come from the legend, so the tooltip shows just the colored numbers.
+  const renderTooltipBody = (
+    label: unknown,
+    payload: ReadonlyArray<{ color?: string; value?: unknown; payload?: MonthlyElectricityPoint }>
+  ) => (
+    <div className="space-y-0.5 rounded-md border bg-background px-2.5 py-1.5 text-sm shadow-md">
+      <div className="font-medium">{labelWithComment(String(label ?? ""), payload)}</div>
+      {payload.map((entry, index) => (
+        <div key={index} className="flex items-center gap-2">
+          <span className="size-2.5 shrink-0 rounded-sm" style={{ backgroundColor: entry.color }} />
+          <span className="tabular-nums">{formatValue(Number(entry.value ?? 0))}</span>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -124,8 +135,9 @@ export function ElectricityCharts({
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip
-                  formatter={tooltipFormatter}
-                  labelFormatter={(label, payload) => labelWithComment(label, payload)}
+                  content={({ active, payload, label }) =>
+                    active && payload?.length ? renderTooltipBody(label, payload) : null
+                  }
                 />
                 <Legend />
                 <Area
@@ -183,8 +195,9 @@ export function ElectricityCharts({
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip
-                  formatter={tooltipFormatter}
-                  labelFormatter={(label, payload) => labelWithComment(label, payload)}
+                  content={({ active, payload, label }) =>
+                    active && payload?.length ? renderTooltipBody(label, payload) : null
+                  }
                 />
                 <Legend />
                 <Area
@@ -252,8 +265,9 @@ export function ElectricityCharts({
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip
-                  formatter={tooltipFormatter}
-                  labelFormatter={(label, payload) => labelWithComment(label, payload)}
+                  content={({ active, payload, label }) =>
+                    active && payload?.length ? renderTooltipBody(label, payload) : null
+                  }
                 />
                 <Legend />
                 <Area
@@ -290,8 +304,9 @@ export function ElectricityCharts({
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip
-                  formatter={tooltipFormatter}
-                  labelFormatter={(label, payload) => labelWithComment(label, payload)}
+                  content={({ active, payload, label }) =>
+                    active && payload?.length ? renderTooltipBody(label, payload) : null
+                  }
                 />
                 <Legend />
                 <Area

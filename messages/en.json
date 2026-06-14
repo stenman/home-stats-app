@@ -149,6 +149,23 @@
       "close": "Close",
       "cancel": "Cancel",
       "emptyState": "No electricity data yet. Import a TSV file to get started."
+    },
+    "yearly": {
+      "headerTitle": "All years",
+      "link": "All years",
+      "emptyState": "No electricity data yet. Import a TSV file on the electricity page first.",
+      "partialNote": "* {year}: partial year ({months} months of data)",
+      "charts": {
+        "annualTotalCost": "Annual total cost",
+        "annualConsumption": "Annual consumption",
+        "annualEnergyCost": "Annual energy fees",
+        "annualGridCost": "Annual grid fees",
+        "avgEnergyOrePerKwh": "Average öre/kWh (energy fees)",
+        "avgTotalOrePerKwh": "Average öre/kWh (total)",
+        "avgEnergyPerMonth": "Average energy fees per month",
+        "avgGridPerMonth": "Average grid fees per month",
+        "avgTotalPerMonth": "Average total cost per month"
+      }
     }
   }
 }
