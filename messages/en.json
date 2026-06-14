@@ -135,6 +135,20 @@
       "legendTransferShort": "Transfer",
       "legendTotalCost": "Total cost SEK",
       "legendSettledKwh": "Total settled (kWh)"
+    },
+    "import": {
+      "button": "Import",
+      "title": "Import electricity data",
+      "dropHint": "Drag a TSV file here, or",
+      "chooseFile": "Choose file",
+      "importing": "Importing…",
+      "error": "Could not import the file.",
+      "success": "Imported {count} months.",
+      "yearsRange": "Years {from}–{to}",
+      "warningsCount": "{count} row(s) skipped.",
+      "close": "Close",
+      "cancel": "Cancel",
+      "emptyState": "No electricity data yet. Import a TSV file to get started."
     }
   }
 }

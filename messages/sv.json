@@ -135,6 +135,20 @@
       "legendTransferShort": "Elöverföring",
       "legendTotalCost": "Total kostnad SEK",
       "legendSettledKwh": "Summa avstämt (kWh)"
+    },
+    "import": {
+      "button": "Importera",
+      "title": "Importera eldata",
+      "dropHint": "Dra en TSV-fil hit, eller",
+      "chooseFile": "Välj fil",
+      "importing": "Importerar…",
+      "error": "Kunde inte importera filen.",
+      "success": "Importerade {count} månader.",
+      "yearsRange": "År {from}–{to}",
+      "warningsCount": "{count} rad(er) hoppades över.",
+      "close": "Stäng",
+      "cancel": "Avbryt",
+      "emptyState": "Ingen eldata ännu. Importera en TSV-fil för att komma igång."
     }
   }
 }

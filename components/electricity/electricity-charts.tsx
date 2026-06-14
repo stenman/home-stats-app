@@ -73,10 +73,8 @@ export function ElectricityCharts({
     card2A: item.energyFeeInclVatOrePerKwh,
     card2B: item.energyTaxInclVatOrePerKwh,
     card2C: item.transferInclVatOrePerKwh,
-    card2Aggregated:
-      item.energyFeeInclVatOrePerKwh +
-      item.energyTaxInclVatOrePerKwh +
-      item.transferInclVatOrePerKwh,
+    // Source value from the spreadsheet ("Kostnad öre/kWh") rather than the recomputed sum.
+    card2Aggregated: item.totalPriceInclVatOrePerKwh,
     card3: item.totalCostSek,
     card4: item.settledKwh,
   }));
@@ -93,6 +91,7 @@ export function ElectricityCharts({
 
   const card1Stats = metricSummary(["card1A", "card1B"]);
   const card2Stats = metricSummary(["card2A", "card2B", "card2C"]);
+  const card2AggStats = metricSummary(["card2Aggregated"]);
   const card3Stats = metricSummary(["card3"]);
   const card4Stats = metricSummary(["card4"]);
   const formatValue = (value: number) =>
@@ -229,13 +228,13 @@ export function ElectricityCharts({
             <p>
               {totalLabel}: {legendEnergyFeeShort} {formatValue(card2Stats.totals[0])}, {legendEnergyTaxShort}{" "}
               {formatValue(card2Stats.totals[1])}, {legendTransferShort} {formatValue(card2Stats.totals[2])},{" "}
-              {aggregatedLabel} {formatValue(card2Stats.grandTotal)}
+              {aggregatedLabel} {formatValue(card2AggStats.grandTotal)}
             </p>
             <p className="text-muted-foreground">
               {averageLabel}: {legendEnergyFeeShort} {formatValue(card2Stats.averages[0])}, {legendEnergyTaxShort}{" "}
               {formatValue(card2Stats.averages[1])}, {legendTransferShort}{" "}
               {formatValue(card2Stats.averages[2])}, {aggregatedLabel}{" "}
-              {formatValue(card2Stats.aggregatedAverage)}
+              {formatValue(card2AggStats.aggregatedAverage)}
             </p>
           </div>
         </CardContent>

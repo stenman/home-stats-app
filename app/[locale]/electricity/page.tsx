@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ElectricityCharts } from "@/components/electricity/electricity-charts";
+import { ImportButton } from "@/components/electricity/import-button";
 import { SettingsPanel } from "@/components/settings-panel";
 import { StatsCard } from "@/components/electricity/stats-card";
 import { getElectricityDashboardData } from "@/lib/electricity-data";
@@ -40,6 +41,13 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
         <h1 className="text-3xl font-semibold tracking-tight">{t("headerTitle")}</h1>
       </div>
 
+      {data.availableYears.length === 0 ? (
+        <section className="flex flex-col items-center gap-4 rounded-2xl border border-dashed py-16 text-center">
+          <p className="text-muted-foreground">{t("import.emptyState")}</p>
+          <ImportButton />
+        </section>
+      ) : (
+        <>
       <section className="mb-8 flex items-center gap-3">
         {previousYear ? (
           <Link
@@ -76,6 +84,7 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
             <ChevronRight className="size-4" />
           </span>
         )}
+        <ImportButton />
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -114,7 +123,7 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
             />
             <StatsCard
               title={t("yearlyCards.averageTotalPrice")}
-              value={`${data.yearlySummary.averageEnergyFeeInclVatOrePerKwh.toLocaleString("sv-SE", { maximumFractionDigits: 1 })} öre/kWh`}
+              value={`${data.yearlySummary.averageTotalPriceInclVatOrePerKwh.toLocaleString("sv-SE", { maximumFractionDigits: 1 })} öre/kWh`}
             />
           </div>
         </section>
@@ -145,6 +154,8 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
           legendSettledKwh={t("charts.legendSettledKwh")}
         />
       </section>
+        </>
+      )}
     </main>
   );
 }
