@@ -162,3 +162,24 @@ export async function getElectricityYearlyData(): Promise<YearlyElectricityPoint
       };
     });
 }
+
+export type ElectricityComment = { date: string; label: string; comment: string };
+
+export async function getElectricityComments(): Promise<ElectricityComment[]> {
+  const rows = await readStoredRows();
+  return rows
+    .filter((r): r is StoredElectricityRow & { comment: string } =>
+      Boolean(r.comment && r.comment.trim() !== "")
+    )
+    .map((r) => {
+      const date = new Date(`${r.dateFrom}T00:00:00`);
+      const label = new Intl.DateTimeFormat("sv-SE", {
+        month: "short",
+        year: "numeric",
+      })
+        .format(date)
+        .replace(".", "");
+      return { date: r.dateFrom, label, comment: r.comment };
+    })
+    .sort((a, b) => b.date.localeCompare(a.date)); // newest first
+}

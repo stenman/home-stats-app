@@ -3,12 +3,14 @@ import { Home } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { SettingsPanel } from "@/components/settings-panel";
 import { YearlyCharts } from "@/components/electricity/yearly-charts";
-import { getElectricityYearlyData } from "@/lib/electricity-data";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getElectricityComments, getElectricityYearlyData } from "@/lib/electricity-data";
 
 export default async function ElectricityYearlyPage() {
   const t = await getTranslations("electricity");
   const tCommon = await getTranslations("dashboard");
   const data = await getElectricityYearlyData();
+  const comments = await getElectricityComments();
 
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
@@ -40,7 +42,29 @@ export default async function ElectricityYearlyPage() {
           </Link>
         </section>
       ) : (
-        <YearlyCharts data={data} />
+        <div className="space-y-6">
+          <YearlyCharts data={data} />
+
+          {comments.length > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("yearly.comments.title")}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="divide-y">
+                  {comments.map((c) => (
+                    <li key={c.date} className="flex gap-3 py-2 text-sm first:pt-0 last:pb-0">
+                      <span className="w-24 shrink-0 text-muted-foreground tabular-nums">
+                        {c.label}
+                      </span>
+                      <span>{c.comment}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ) : null}
+        </div>
       )}
     </main>
   );

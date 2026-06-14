@@ -165,6 +165,9 @@
         "avgEnergyPerMonth": "Medelvärde elavgifter",
         "avgGridPerMonth": "Medelvärde nätavgifter",
         "avgTotalPerMonth": "Medelvärde total kostnad"
+      },
+      "comments": {
+        "title": "Kommentarer"
       }
     }
   }
