@@ -112,11 +112,7 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
 
       {data.yearlySummary ? (
         <section className="mt-8">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <StatsCard
-              title={t("yearlyCards.totalAnnualCost")}
-              value={`${data.yearlySummary.totalAnnualCostSek.toLocaleString()} SEK`}
-            />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <StatsCard
               title={t("yearlyCards.annualElectricityFees")}
               value={`${data.yearlySummary.annualElectricitySupplierSek.toLocaleString()} SEK`}
@@ -124,10 +120,6 @@ export default async function ElectricityPage({ searchParams }: ElectricityPageP
             <StatsCard
               title={t("yearlyCards.annualGridFees")}
               value={`${data.yearlySummary.annualGridFeesSek.toLocaleString()} SEK`}
-            />
-            <StatsCard
-              title={t("yearlyCards.totalAnnualConsumption")}
-              value={`${data.yearlySummary.totalAnnualSettledKwh.toLocaleString()} kWh`}
             />
             <StatsCard
               title={t("yearlyCards.averageTotalPrice")}
