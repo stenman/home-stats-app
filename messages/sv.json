@@ -11,6 +11,10 @@
       "chores": {
         "title": "Sysslor",
         "description": "Hjälp till hemma och samla poäng för utförda sysslor."
+      },
+      "router": {
+        "title": "Router",
+        "description": "Lokal nätverksstatistik från ditt Deco-mesh: genomströmning, nodhälsa och dataanvändning."
       }
     }
   },
@@ -169,6 +173,41 @@
       "comments": {
         "title": "Kommentarer"
       }
+    }
+  },
+  "router": {
+    "headerTitle": "Router",
+    "lastUpdated": "Senast uppdaterad",
+    "emptyState": "Ingen routerdata ännu. Kör Deco-insamlaren för att börja samla statistik.",
+    "speedUnit": "KB/s",
+    "collector": {
+      "on": "Insamling: på",
+      "off": "Insamling: av",
+      "hint": "Slå på eller av den schemalagda Deco-insamlaren."
+    },
+    "cards": {
+      "download": "Nedladdning nu",
+      "upload": "Uppladdning nu",
+      "clients": "Anslutna enheter",
+      "cpuMem": "CPU / minne"
+    },
+    "nodesHeading": "Mesh-noder",
+    "roleMain": "Huvud",
+    "roleSatellite": "Satellit",
+    "nodeInternet": "Internet",
+    "nodeSignal": "Upplänkssignal",
+    "charts": {
+      "throughputTitle": "Genomströmning (senaste)",
+      "resourcesTitle": "CPU och minne (senaste)",
+      "dailyTitle": "Daglig genomsnittlig genomströmning",
+      "clientsTitle": "Toppenheter efter data (uppskattat)",
+      "clientsNote": "Uppskattat genom att mäta hastigheter med några minuters mellanrum – riktningsvisande, inte exakt. Det lokala Deco-API:et exponerar inga ackumulerade räknare per enhet.",
+      "down": "Nedladdning",
+      "up": "Uppladdning",
+      "cpu": "CPU",
+      "mem": "Minne",
+      "avgDown": "Snitt nedladdning",
+      "avgUp": "Snitt uppladdning"
     }
   }
 }

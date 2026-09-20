@@ -1,0 +1,2 @@
+# Deco local-API collector dependency. Pinned for reproducible Pi installs.
+tplinkrouterc6u==5.23.0

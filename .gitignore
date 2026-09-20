@@ -47,6 +47,14 @@ original_plan.md
 public/avatars/*.png
 data/chores-history.json
 data/electricity-data.json
+data/router-stats.json
+data/router-daily.json
+data/router-collector.json
+
+# deco collector secrets + local venv
+scripts/deco.env
+scripts/.venv/
+__pycache__/
 
 # deploy staging dir for Pi (built by deploy-to-pi.sh)
 /.deploy/

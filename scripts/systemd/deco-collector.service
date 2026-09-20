@@ -1,0 +1,20 @@
+[Unit]
+Description=Poll TP-Link Deco local API and append stats for home-stats-app
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Adjust paths/user to match the deploy location on the Pi.
+WorkingDirectory=/opt/homestats/scripts
+ExecStart=/opt/homestats/scripts/.venv/bin/python /opt/homestats/scripts/deco-collector.py
+# Non-secret config only (DECO_HOST, optional DECO_USERNAME/DECO_STATS_WINDOW_HOURS).
+EnvironmentFile=/opt/homestats/scripts/deco.env
+# Admin password as an ENCRYPTED credential bound to this machine. systemd decrypts
+# it into $CREDENTIALS_DIRECTORY/deco_password (a private tmpfs) only while we run;
+# no plaintext is ever written to disk. Create the blob once with:
+#   echo -n 'your-admin-pw' | systemd-creds encrypt --name=deco_password - /etc/homestats/deco_password.cred
+LoadCredentialEncrypted=deco_password:/etc/homestats/deco_password.cred
+User=homestats
+Group=homestats
+Nice=10

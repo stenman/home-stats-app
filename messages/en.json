@@ -11,6 +11,10 @@
       "chores": {
         "title": "Chores",
         "description": "Help out at home and earn points by completing chores."
+      },
+      "router": {
+        "title": "Router",
+        "description": "Local network statistics from your Deco mesh: throughput, node health and data usage."
       }
     }
   },
@@ -169,6 +173,41 @@
       "comments": {
         "title": "Comments"
       }
+    }
+  },
+  "router": {
+    "headerTitle": "Router",
+    "lastUpdated": "Last updated",
+    "emptyState": "No router data yet. Run the Deco collector to start gathering statistics.",
+    "speedUnit": "KB/s",
+    "collector": {
+      "on": "Collecting: on",
+      "off": "Collecting: off",
+      "hint": "Turn the scheduled Deco data collector on or off."
+    },
+    "cards": {
+      "download": "Download now",
+      "upload": "Upload now",
+      "clients": "Connected clients",
+      "cpuMem": "CPU / memory"
+    },
+    "nodesHeading": "Mesh nodes",
+    "roleMain": "Main",
+    "roleSatellite": "Satellite",
+    "nodeInternet": "Internet",
+    "nodeSignal": "Uplink signal",
+    "charts": {
+      "throughputTitle": "Throughput (recent)",
+      "resourcesTitle": "CPU & memory (recent)",
+      "dailyTitle": "Daily average throughput",
+      "clientsTitle": "Top clients by data (estimated)",
+      "clientsNote": "Estimated by sampling speeds every few minutes — directional, not exact. The local Deco API exposes no cumulative per-client counters.",
+      "down": "Download",
+      "up": "Upload",
+      "cpu": "CPU",
+      "mem": "Memory",
+      "avgDown": "Avg download",
+      "avgUp": "Avg upload"
     }
   }
 }
